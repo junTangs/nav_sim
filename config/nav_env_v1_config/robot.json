@@ -1,0 +1,22 @@
+{
+
+    "x": 0,
+    "y": 0,
+    "r": 0.1,
+    "theta": 0,
+    "v_max": 1,
+    "v_min": -1,
+    "omega_max": 0,
+    "omega_min": 0,
+    "image":"images/robot.png",
+    "sensor":[
+        {
+            "type":"dist",
+            "theta":0,
+            "max_distance":0,
+        },
+        {
+            "type":"goal"
+        }
+    ]
+}
