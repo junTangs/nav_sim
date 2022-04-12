@@ -13,7 +13,7 @@
         {
             "type":"dist",
             "theta":0,
-            "max_distance":0,
+            "max_distance":0
         },
         {
             "type":"goal"

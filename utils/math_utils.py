@@ -1,18 +1,18 @@
 import math
+from numba import njit
 
-
-
+@njit
 def rotate(x,y,degree):
     x_new = x*math.cos(math.radians(degree)) - y*math.sin(math.radians(degree))
     y_new = x*math.sin(math.radians(degree)) + y*math.cos(math.radians(degree))
     return x_new,y_new
 
-
+@njit
 def distance(x1,y1,x2,y2):
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
 
-
+@njit
 def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     # M = P-C
     m_0 = x - c_x
@@ -38,7 +38,7 @@ def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     
 
 
-
+@njit
 def clock_angle(x1,y1,x2,y2):
     the_norm1 = math.sqrt(x1**2 + y1**2)
     the_norm2 = math.sqrt(x2**2 + y2**2)
@@ -51,10 +51,15 @@ def clock_angle(x1,y1,x2,y2):
     theta = math.degrees(theta)
     return theta if rho > 0 else -theta
 
-
+@njit
 def norm(x,max_x,min_x = 0):
     return (x-min_x)/(max_x-min_x)
 
-
+@njit
 def trans_angle(angle):
     return 180 - (180-angle)%360
+
+
+if __name__ == "__main__":
+    for i in range(100000):
+        line_circle_cross_cal(0,0,1,1,0,0,1)

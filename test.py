@@ -5,7 +5,7 @@ import random
 
 WIDTH = 800 # width of our game window
 HEIGHT = 600 # height of our game window
-FPS = 30 # 30 frames per second
+FPS = 100 # 30 frames per second
 
 
 # Colors(R,G,B),define color
@@ -22,8 +22,8 @@ class Player(pygame.sprite.Sprite):
         # this line is required to properly create the sprite
         pygame.sprite.Sprite.__init__(self)
         # create a plain rectangle for the sprite image
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(GREEN)
+        self.image = pygame.image.load("images/obstacle.png")
+        self.image = pygame.transform.scale(self.image,(50,50))
         # find the rectangle that encloses the image
         self.rect = self.image.get_rect()
         # center the sprite on the screen
@@ -49,9 +49,6 @@ all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 
-player2 = Player()
-
-pygame.sprite.spritecollide()
 # Game Loop
 running = True
 
@@ -72,7 +69,7 @@ while running:
 
 
     # Render(draw)             # 现在还没有确定具体的代码，先用一些基本代码填充，后续再补充
-    screen.fill(BLACK)
+    screen.fill(WHITE)
     all_sprites.draw(screen)
     # *after* drawing everything,flip the display
     pygame.display.flip()
