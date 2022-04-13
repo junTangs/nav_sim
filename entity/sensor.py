@@ -15,3 +15,6 @@ class Sensor(metaclass = ABCMeta):
     def load(self,config:dict):
         self.__dict__.update(config)
         return
+
+    def draw(self,screen):
+        pass

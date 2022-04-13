@@ -26,7 +26,7 @@ def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     d = b*b - c
     
     if c > 0 and b > 0 :
-        return None 
+        return -1
     
     
     if d <0 :
@@ -43,6 +43,7 @@ def clock_angle(x1,y1,x2,y2):
     the_norm1 = math.sqrt(x1**2 + y1**2)
     the_norm2 = math.sqrt(x2**2 + y2**2)
     the_norm = the_norm1 * the_norm2
+
     
     dot = x1*x2 + y1*y2
     cross = x1*y2 - x2*y1
@@ -59,6 +60,19 @@ def norm(x,max_x,min_x = 0):
 def trans_angle(angle):
     return 180 - (180-angle)%360
 
+
+@njit
+def symmetic_y_a(x,y,a):
+    return x,2*a-y
+
+@njit
+def scare(x,y,src,dst):
+    return x*(dst[0]/src[0]),y*(dst[1]/src[1])
+
+@njit
+def xy_into_display(x,y,display_size,size):
+    x,y = scare(x,y,size,display_size)
+    return symmetic_y_a(x,y,display_size[1]//2)
 
 if __name__ == "__main__":
     for i in range(100000):

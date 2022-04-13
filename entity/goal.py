@@ -1,10 +1,11 @@
 
+from re import S
 from pygame.sprite import Sprite
 from entity.manager import EntityManager
 import pygame
 
 class Goal(Sprite):
-    def __init__(self,config,dt,scare) -> None:
+    def __init__(self,config,dt,scare_trans,coord_trans) -> None:
         super().__init__()
         self.config = config
         self.id = None
@@ -15,19 +16,27 @@ class Goal(Sprite):
         
         self.dt = dt 
         self.image = None
+        self.display_image = None
         self.rect = None
-        self.l_scare = scare[0] # px/m : x axis
-        self.w_scare = scare[1] # px/m : y axis
+        self.coord_trans = coord_trans
+        self.scare_trans = scare_trans
+        self.setup()
         
     
     def setup(self):
          # appearance
         self.image = pygame.image.load(self.config['image'])
-        self.image = pygame.transform.scale(self.image,(self.r*self.l_scare,self.r*self.w_scare))
-        self.rect = self.image.get_rect()
-        self.rect.center = (self.x*self.l_scare,self.y*self.w_scare)
+        self.image = pygame.transform.smoothscale(self.image,self.scare_trans(self.r*2,self.r*2))
+
+        self.display_image = self.image.copy()
+        self.rect = self.display_image.get_rect()
+        self.rect.center = self.coord_trans(self.x,self.y)
         EntityManager.register(self)
-    
+
+
+    def draw(self,screen):
+        screen.blit(self.display_image,self.rect)
+
     
     def update(self):
         pass 

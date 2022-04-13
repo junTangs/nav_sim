@@ -1,23 +1,13 @@
 {
     "goals":[
+
         {
-            "x":0,
-            "y":0,
-            "r":0.5,
-            "image":"images/goal.png"
-        },
-        {
-            "x":5,
-            "y":5,
-            "r":0.5,
-            "image":"images/goal.png"
-        },
-        {
-            "x":10,
-            "y":10,
+            "x":1,
+            "y":1,
             "r":0.5,
             "image":"images/goal.png"
         }
+
 
     
     ]

@@ -14,8 +14,8 @@ class GoalSensor(Sensor):
         result = {"type":"goal","results" : []}
         for goal in goals:
             d = distance(robot_states['x'],robot_states['y'],goal.x,goal.y)
-            angle = clock_angle(robot_states['x'],robot_states['y'],goal.x,goal.y)
-            result.append({"id":goal.id,"distance":d,"angle":angle,"x":goal.x,"y":goal.y})
+            angle = clock_angle(robot_states['vx'],robot_states['vy'],goal.x - robot_states["x"],goal.y - robot_states["y"])
+            result["results"].append({"id":goal.id,"distance":d,"angle":angle,"x":goal.x,"y":goal.y})
         
         self.data['results'] = result
         return result

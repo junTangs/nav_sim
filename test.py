@@ -1,79 +1,62 @@
-#  Pygame template - skeleton for a new pygame project
-import pygame
-import random
+from entity import *
+from entity import robot
+import json
+import pygame 
+from pygame.sprite import Sprite,Group
+from pprint import pprint
+from pygame.locals import *
+from utils.math_utils import *
+from utils.env_utils import *
+from functools import partial
+
+DISPLAY_SIZE = (800,800)
+ENV_SIZE = (10,10)
 
 
-WIDTH = 800 # width of our game window
-HEIGHT = 600 # height of our game window
-FPS = 100 # 30 frames per second
+scare_trans = partial(scare,dst = DISPLAY_SIZE,src = ENV_SIZE)
+coord_trans = partial(xy_into_display, display_size=DISPLAY_SIZE, size=ENV_SIZE)
+
+robot_config = json.load(open(r"config\nav_env_v1_config\robot.json"))
+robot = robot.Robot(robot_config,dt = 1,scare_trans = scare_trans,coord_trans = coord_trans)
 
 
-# Colors(R,G,B),define color
-BLACK = (0,0,0)
-WHITE = (255,255,255)
-RED = (255,0,0)
-GREEN = (0,255,0)
-BLUE = (0,0,255)
+obstacles = Group()
+obstacle_config = json.load(open(r"config\nav_env_v1_config\obstacle.json"))
+pprint(obstacle_config)
+
+for obstacle in obstacle_config["obstacles"]:
+    obstacles.add(Obstacle(obstacle,dt = 0.1,scare_trans = scare_trans,coord_trans = coord_trans))
+
+screen = pygame.display.set_mode(DISPLAY_SIZE ,DOUBLEBUF|HWSURFACE)  # set screen
+
+goal_config = json.load(open(r"config\nav_env_v1_config\goal.json"))
+goals = Group()
+pprint(goal_config)
+for goal in goal_config["goals"]:
+    goals.add(Goal(goal,0.1,scare_trans= scare_trans,coord_trans = coord_trans))
 
 
-class Player(pygame.sprite.Sprite):
-    # sprite for the Player
-    def __init__(self):
-        # this line is required to properly create the sprite
-        pygame.sprite.Sprite.__init__(self)
-        # create a plain rectangle for the sprite image
-        self.image = pygame.image.load("images/obstacle.png")
-        self.image = pygame.transform.scale(self.image,(50,50))
-        # find the rectangle that encloses the image
-        self.rect = self.image.get_rect()
-        # center the sprite on the screen
-        self.rect.center = (WIDTH/2, HEIGHT/2)
+RUN_FLAG= True
 
-    def update(self, *args):
-        # any code here will happen every time the game loop updates
-        self.rect.x += 5
-        if self.rect.left > WIDTH:
-            self.rect.right = 0
-
-
-
-# initialize pygame and create windw
-pygame.init()  # 启动pygame并初始化
-pygame.mixer.init()  # 声音初始化
-screen = pygame.display.set_mode((WIDTH, HEIGHT))  # 游戏屏幕，按照在配置常量中设置的大小创建
-pygame.display.set_caption("Sprite Example")
-clock = pygame.time.Clock()  # 创建一个时钟以便于确保游戏能以指定的FPS运行
-
-
-all_sprites = pygame.sprite.Group()
-player = Player()
-all_sprites.add(player)
-
-# Game Loop
-running = True
-
-
-while running:
-    # keep loop running at the right speed
-    clock.tick(FPS)
-
-    # Process input(events)    # 这是游戏主循环，通过变量running控制，如果需要
+while RUN_FLAG:
     for event in pygame.event.get():
-        # check for closing window
-        if event.type == pygame.QUIT:
-            running = False
+        if event.type == QUIT:
+            pygame.quit()
+            exit()
 
+    robot.move(0.01,0.01)
+    robot.update()
+    robot.detect(obstacles,goals)
 
-    # Update                   # 游戏结束的话直接将running设为False即可
-    all_sprites.update()
+    screen = pygame.display.set_mode(DISPLAY_SIZE,DOUBLEBUF|HWSURFACE)  # set screen
+    screen.fill((255,255,255))
 
+    robot.draw(screen)
+    for obstacle in obstacles:
+        obstacle.draw(screen)
+    for goal in goals:
+        goals.draw(screen)
 
-    # Render(draw)             # 现在还没有确定具体的代码，先用一些基本代码填充，后续再补充
-    screen.fill(WHITE)
-    all_sprites.draw(screen)
-    # *after* drawing everything,flip the display
-    pygame.display.flip()
+    screen = pygame.transform.flip(screen, False, True)
+    pygame.display.update()
 
-
-
-pygame.quit()

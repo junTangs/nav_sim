@@ -1,6 +1,7 @@
 import json
 from abc import ABCMeta, abstractmethod
 import math
+from re import S
 from gym import Env
 from gym.spaces import Box,Discrete
 from pygame.sprite import Group
@@ -9,6 +10,8 @@ from utils.env_utils import collide
 import numpy as np
 from collections import deque
 import random
+from utils.math_utils import scare,xy_into_display
+from functools import partial
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -24,8 +27,10 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.max_distance = math.sqrt(self.width**2+self.length**2)
     
         
-        self.l_scale = 0 # px/m
-        self.w_scale = 0 # px/m
+        # scare to display
+        self.scare  = partial(scare,src = (self.length,self.width),dst = self.display_size)
+        self.coord_trans = partial(xy_into_display,display_size = self.display_size,size = (self.length,self.width))
+ 
         
         # display parameters
         self.is_render = self.config['is_render']
@@ -55,10 +60,10 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
 
         
         self.setup()
+        
                         
     def setup(self):
-        self.l_scale = self.display_size[0]/self.length
-        self.w_scale =self.display_size[1]/self.width
+
         
         if self.is_render:
             self.screen = pygame.display.set_mode(self.display_size) # set screen

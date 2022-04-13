@@ -2,8 +2,8 @@
 
     "obstacles":[
         {
-            "x":0,
-            "y":0,
+            "x":3,
+            "y":3,
             "r":0.5,
             "image":"images/obstacle.png"
         },
@@ -14,8 +14,8 @@
             "image":"images/obstacle.png"
         },
         {
-            "x":10,
-            "y":10,
+            "x":4,
+            "y":4,
             "r":0.5,
             "image":"images/obstacle.png"
         }
