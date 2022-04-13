@@ -57,6 +57,5 @@ while RUN_FLAG:
     for goal in goals:
         goals.draw(screen)
 
-    screen = pygame.transform.flip(screen, False, True)
     pygame.display.update()
 
