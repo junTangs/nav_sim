@@ -10,8 +10,6 @@ config = json.load(open(config_path))
 env = NavEnvV1(config)
 env.reset()
 pprint(EntityManager.ENTITIES_TABLE)
-for i in tqdm.trange(10000000):
-    s_,r,d,info = env.step(env.action_space.sample())
-    env.render()
-    if d :
-        env.reset()
+s_,r,d,info = env.step(0)
+print(s_)
+

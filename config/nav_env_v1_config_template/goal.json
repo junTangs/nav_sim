@@ -2,11 +2,11 @@
     "goals":[
 
         {
-            "x":1,
-            "y":1,
+            "x":3,
+            "y":2,
             "r":0.5,
             "image":"images/goal.png",
-            "is_random": true
+            "is_random": false
         }
 
 

@@ -1,14 +1,14 @@
 {
 
-    "x": 2,
+    "x": 1,
     "y": 2,
     "r": 0.5,
     "theta": 0,
     "v_max": 1,
     "v_min": -1,
-    "omega_max": 3,
-    "omega_min": 0,
-    "is_random": true,
+    "omega_max": 1,
+    "omega_min": -1,
+    "is_random": false,
     "image":"images/robot.png",
     "sensor":[
         {
