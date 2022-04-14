@@ -13,6 +13,7 @@ import random
 from utils.math_utils import scare,xy_into_display
 from functools import partial
 from pygame.locals import *
+from entity.manager import EntityManager
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -67,7 +68,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self._setup()
         
         if self.is_render:
-            self.screen = pygame.display.set_mode(self.display_size,HWSURFACE|DOUBLEBUF) # set screen
+            self.screen = pygame.display.set_mode(self.display_size,HWSURFACE) # set screen
         
         init_states = self._states()
         BaseNavEnv.observation_space = Box(0,1,(self.stack_frames,len(init_states)))
@@ -85,8 +86,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
 
         results = pygame.sprite.spritecollide(self.robot,self.obstacles,False,collide)
         bound_results =  self.robot.x <= self.robot.r or self.robot.x >= self.length - self.robot.r or self.robot.y <= self.robot.r or self.robot.y >= self.width - self.robot.r
-    
-        if len(results)>=0:
+
+        if len(results)>0:
             return True,{"collide":"obstacle","details":results}
         if bound_results:
             return True,{"collide":"bound","details":bound_results}
@@ -101,6 +102,11 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         return len(self.goals) == 0
             
     def reset(self):
+        self.robot = None
+        self.obstacles = Group()
+        self.goals = Group()
+        EntityManager.clear()
+
         self.setup()
         return self.states()
     
@@ -113,6 +119,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             self.collide_flag = True
             self.collide_detail = details
             return True,"collide"
+
+        return False,"none"
 
     def step(self,action):
         
@@ -128,9 +136,9 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     
         for goal in self.goals:
             goal.update()
-        
+
+
         done,info["done_info"] = self.is_done()
-        
         reward = self.reward()
         
         # update frames

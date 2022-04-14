@@ -4,10 +4,11 @@ from utils.math_utils import distance,clock_angle
 
 
 class GoalSensor(Sensor):
-    def __init__(self, name) -> None:
+    def __init__(self,config,name,scare_trans,coord_trans) -> None:
         super().__init__(name)
-        
         self.data = None
+        self.scare_trans = scare_trans
+        self.coord_trans = coord_trans
         
     def detect(self, robot_states: dict, obstacles: list,goals:list) -> dict:
         self.data = {"results":[]}
@@ -19,7 +20,7 @@ class GoalSensor(Sensor):
         
         self.data['results'] = result
         return result
-            
+Sensor.FACTORY["goal"] = GoalSensor
             
             
             

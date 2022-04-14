@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Sensor(metaclass = ABCMeta):
+    FACTORY = {}
     def __init__(self,name) -> None:
         self.name = name
     

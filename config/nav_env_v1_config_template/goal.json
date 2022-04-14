@@ -6,7 +6,7 @@
             "y":1,
             "r":0.5,
             "image":"images/goal.png",
-            "is_random": false
+            "is_random": true
         }
 
 

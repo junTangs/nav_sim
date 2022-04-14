@@ -13,3 +13,8 @@ class EntityManager:
     @classmethod
     def get(cls,id):
         return cls.ENTITIES_TABLE[id]
+
+    @classmethod
+    def clear(cls):
+        cls.ENTITIES_TABLE.clear()
+        ID = 0

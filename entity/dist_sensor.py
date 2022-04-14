@@ -10,10 +10,10 @@ import pygame
 
 class DistSensor(Sensor):
     COLOR = (123,123,123)
-    def __init__(self,theta,max_distance,name,scare_trans,coord_trans) -> None:
+    def __init__(self,config,name,scare_trans,coord_trans) -> None:
         super().__init__(name)
-        self.theta = theta
-        self.max_distance = max_distance # m
+        self.theta = config["theta"]
+        self.max_distance = config["max_distance"] # m
         self.data = None
         self.scare_trans = scare_trans
         self.coord_trans = coord_trans
@@ -52,4 +52,4 @@ class DistSensor(Sensor):
         pygame.draw.aaline(screen,self.COLOR,(x1,y1),(x2,y2),2)
         pygame.draw.circle(screen,self.COLOR,(x2,y2),1)
 
-        
+Sensor.FACTORY["dist"] = DistSensor

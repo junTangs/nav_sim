@@ -1,4 +1,4 @@
-from re import S
+
 from pygame.sprite import Sprite
 import math
 from utils.math_utils import rotate
@@ -46,4 +46,11 @@ class Obstacle(Sprite):
         pass
     
     def draw(self,screen):
+        # appearance
+        self.rect = self.display_image.get_rect()
+        self.rect.center = self.coord_trans(self.x, self.y)
         screen.blit(self.display_image,self.rect)
+
+    def set(self,**kwargs):
+        self.__dict__.update(kwargs)
+        self.setup()

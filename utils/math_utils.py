@@ -65,11 +65,9 @@ def trans_angle(angle):
 def symmetic_y_a(x,y,a):
     return x,2*a-y
 
-@njit
 def scare(x,y,src,dst):
     return x*(dst[0]/src[0]),y*(dst[1]/src[1])
 
-@njit
 def xy_into_display(x,y,display_size,size):
     x,y = scare(x,y,size,display_size)
     return symmetic_y_a(x,y,display_size[1]//2)

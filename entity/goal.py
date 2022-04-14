@@ -35,6 +35,9 @@ class Goal(Sprite):
 
 
     def draw(self,screen):
+        # appearance
+        self.rect = self.display_image.get_rect()
+        self.rect.center = self.coord_trans(self.x, self.y)
         screen.blit(self.display_image,self.rect)
 
     

@@ -4,8 +4,8 @@ import pygame
 import math
 from utils.math_utils import rotate,trans_angle
 from entity.manager import EntityManager
-from entity.dist_sensor import DistSensor
-from entity.goal_sensor import GoalSensor
+from entity.sensor import Sensor
+from collections import deque
 
 class Robot(Sprite):
     def __init__(self,config,dt,scare_trans,coord_trans) -> None:
@@ -37,7 +37,10 @@ class Robot(Sprite):
         
         self.sensors = {}
         self.sensor_states = {}
-        
+
+
+        self.trace = deque()
+        self.display_trace = deque()
         
         self.setup()
     
@@ -52,10 +55,11 @@ class Robot(Sprite):
 
 
         for i, sensor_config in enumerate(self.config["sensor"]):
-            if sensor_config["type"] == "dist":
-                self.add_sensor(DistSensor(sensor_config["theta"],sensor_config["max_distance"],f"dist_#{i}",self.scare_trans,self.coord_trans))
-            elif sensor_config["type"] == "goal":
-                self.add_sensor(GoalSensor(f"goal_#{i}"))
+            sensor_type = sensor_config["type"]
+            sensor_name = f"sensor_{sensor_type}#{i}"
+            sensor = Sensor.FACTORY[sensor_type](sensor_config,sensor_name,self.scare_trans,self.coord_trans)
+            self.sensors[sensor_name] = sensor
+
 
         EntityManager.register(self)
         
@@ -72,11 +76,13 @@ class Robot(Sprite):
 
         self.x  += self.v*self.dt*math.cos(theta_rad)
         self.y  += self.v*self.dt*math.sin(theta_rad)
-        # appearance
-        self.display_image = pygame.transform.rotate(self.image, self.theta)
 
-        self.rect = self.display_image.get_rect()
-        self.rect.center = self.coord_trans(self.x,self.y)
+        self.trace.append((self.x,self.y))
+        self.display_trace.append(self.coord_trans(self.x,self.y))
+
+        if len(self.trace) > 250:
+            self.trace.popleft()
+            self.display_trace.popleft()
 
         return 
         
@@ -88,7 +94,17 @@ class Robot(Sprite):
     def draw(self,screen):
         for sensor,sensor_instance in self.sensors.items():
             sensor_instance.draw(screen)
+
+        if len(self.display_trace)>=2:
+            pygame.draw.aalines(screen, (0, 0, 0), False, self.display_trace)
+        # appearance
+        self.display_image = pygame.transform.rotate(self.image, self.theta)
+        self.rect = self.display_image.get_rect()
+        self.rect.center = self.coord_trans(self.x,self.y)
         screen.blit(self.display_image, self.rect)
+
+
+
 
            
     @property
