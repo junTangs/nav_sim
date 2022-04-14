@@ -12,6 +12,7 @@ from collections import deque
 import random
 from utils.math_utils import scare,xy_into_display
 from functools import partial
+from pygame.locals import *
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -26,19 +27,19 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.length = self.config['length'] # m:x 
         self.max_distance = math.sqrt(self.width**2+self.length**2)
     
-        
-        # scare to display
-        self.scare  = partial(scare,src = (self.length,self.width),dst = self.display_size)
-        self.coord_trans = partial(xy_into_display,display_size = self.display_size,size = (self.length,self.width))
+
  
         
         # display parameters
         self.is_render = self.config['is_render']
         
-        if self.is_render:
-            self.fps = self.config['fps'] # frames per second
-            self.display_size = [self.config['display_size']['width'],self.config['display_size']['height']] # pixels
-            self.screen = None
+
+        self.fps = self.config['fps'] # frames per second
+        self.display_size = [self.config['display_size']['width'],self.config['display_size']['height']] # pixels
+        self.screen = None
+        # scare to display
+        self.scare = partial(scare, src=(self.length, self.width), dst=self.display_size)
+        self.coord_trans = partial(xy_into_display, display_size=self.display_size, size=(self.length, self.width))
         
         
         # entities 
@@ -63,10 +64,10 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         
                         
     def setup(self):
-
+        self._setup()
         
         if self.is_render:
-            self.screen = pygame.display.set_mode(self.display_size) # set screen
+            self.screen = pygame.display.set_mode(self.display_size,HWSURFACE|DOUBLEBUF) # set screen
         
         init_states = self._states()
         BaseNavEnv.observation_space = Box(0,1,(self.stack_frames,len(init_states)))
@@ -77,14 +78,13 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             random.seed(self.seed)
             np.random.seed(self.seed)
 
-        self._setup()
         self.is_set_up = True
         
         
     def is_collide(self):
 
         results = pygame.sprite.spritecollide(self.robot,self.obstacles,False,collide)
-        bound_results =  self.robot.x <= self.root.r or self.robot.x >= self.length - self.root.r or self.robot.y <= self.root.r or self.robot.y >= self.width - self.root.r
+        bound_results =  self.robot.x <= self.robot.r or self.robot.x >= self.length - self.robot.r or self.robot.y <= self.robot.r or self.robot.y >= self.width - self.robot.r
     
         if len(results)>=0:
             return True,{"collide":"obstacle","details":results}
@@ -119,7 +119,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         info = {"done_info":None,"time":0,"step":0}
         
         action = self.action(action)
-        self.robot.move(action)
+        self.robot.move(*action)
         
         # update states
         self.robot.update()
@@ -131,7 +131,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         
         done,info["done_info"] = self.is_done()
         
-        reward = self.reward(self)
+        reward = self.reward()
         
         # update frames
         self.frames.append(self._states())
@@ -143,14 +143,16 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         info["step"] = self.step_count
         
         return self.states(),reward,done,info
-    
+
 
     def _setup(self):
         pass
+    
+
         
     def render(self,mode = 'human'):
         if self.is_render:
-            self.screen.fill((0,0,0))
+            self.screen.fill((255,255,255))
             for obstacle in self.obstacles:
                 obstacle.draw(self.screen)
             for goal in self.goals:
@@ -191,4 +193,4 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     
     
     def action(self,action):
-        return self.action_map[action]
+        return self.action_map[str(action)]

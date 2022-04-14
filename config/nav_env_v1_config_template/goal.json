@@ -5,7 +5,8 @@
             "x":1,
             "y":1,
             "r":0.5,
-            "image":"images/goal.png"
+            "image":"images/goal.png",
+            "is_random": false
         }
 
 
