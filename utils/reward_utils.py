@@ -12,5 +12,5 @@ def sparse_reward(instance,*args,**kwargs):
         return -1
     else:
         return 0
-    
+
 REWARD_FACTORY["sparse"] = sparse_reward
