@@ -10,6 +10,7 @@ config = json.load(open(config_path))
 env = NavEnvV1(config)
 env.reset()
 pprint(EntityManager.ENTITIES_TABLE)
-s_,r,d,info = env.step(0)
-print(s_)
+for i in range(10000):
+    env.step(1)
+    env.render()
 

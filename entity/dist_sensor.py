@@ -49,7 +49,7 @@ class DistSensor(Sensor):
         x2 = self.data["x"] + self.data["results"]*self.max_distance*math.cos(math.radians(self.data["theta"]))
         y2 = self.data["y"] + self.data["results"]*self.max_distance*math.sin(math.radians(self.data["theta"]))
         x2,y2 = self.coord_trans(x2,y2)
-        pygame.draw.aaline(screen,self.COLOR,(x1,y1),(x2,y2),2)
-        pygame.draw.circle(screen,self.COLOR,(x2,y2),1)
+        pygame.draw.aaline(screen,self.COLOR,(x1,y1),(x2,y2),10)
+        pygame.draw.circle(screen,self.COLOR,(x2,y2),5)
 
 Sensor.FACTORY["dist"] = DistSensor

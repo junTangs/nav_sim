@@ -11,7 +11,6 @@ def rotate(x,y,degree):
 def distance(x1,y1,x2,y2):
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
-
 @njit
 def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     # M = P-C
@@ -35,8 +34,6 @@ def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
         return -b
     elif d > 0 :
         return min(-b+math.sqrt(d),-b-math.sqrt(d))
-    
-
 
 @njit
 def clock_angle(x1,y1,x2,y2):

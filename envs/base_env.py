@@ -14,6 +14,7 @@ from utils.math_utils import scare,xy_into_display
 from functools import partial
 from pygame.locals import *
 from entity.manager import EntityManager
+from utils.reward_utils import REWARD_FACTORY
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -59,12 +60,35 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # recoder 
         self.collide_flag = False
         self.collide_detail = None
+        self.finish_flag = False
+
+        # reward function
+        self.reward_fn = None
 
         
         self.setup()
         
                         
     def setup(self):
+
+        # entities
+        self.obstacles = Group()
+        self.robot = None
+        self.goals = Group()
+
+        # states and action
+        self.stack_frames = self.config['stack_frames']
+        self.frames = None
+        self.action_map = self.config['action_map']
+        self.seed = self.config['seed']
+
+        self.is_set_up = False
+
+        # recoder
+        self.collide_flag = False
+        self.collide_detail = None
+        self.finish_flag = False
+
         self._setup()
         
         if self.is_render:
@@ -79,6 +103,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             random.seed(self.seed)
             np.random.seed(self.seed)
 
+        self.reward_fn = REWARD_FACTORY[self.config["reward_fn"]]
         self.is_set_up = True
         
         
@@ -102,16 +127,13 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         return len(self.goals) == 0
             
     def reset(self):
-        self.robot = None
-        self.obstacles = Group()
-        self.goals = Group()
-        EntityManager.clear()
 
         self.setup()
         return self.states()
     
     def is_done(self):
         if self.is_finished():
+            self.finish_flag = True
             return True,"finished"
         
         collide,details = self.is_collide()
@@ -166,6 +188,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             for goal in self.goals:
                 goal.draw(self.screen)
             self.robot.draw(self.screen)
+
             if mode == "human":
                 pygame.display.flip()
             elif mode == 'rgb_array':
@@ -184,9 +207,9 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     def _states(self):
         pass
     
-    @abstractmethod
+
     def reward(self,*args,**kwargs):
-        pass
+        return self.reward_fn(self,*args,**kwargs)
     
     def save(self,path):
         file = open(path,'w')
@@ -202,3 +225,6 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     
     def action(self,action):
         return self.action_map[str(action)]
+
+    def set_reward_fn(self,reward_fn:callable):
+        self.reward_fn = reward_fn

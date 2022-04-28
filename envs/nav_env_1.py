@@ -5,6 +5,7 @@ from entity.goal import Goal
 from entity.obstacle import Obstacle
 import pygame
 from utils.env_utils import collide
+from utils.reward_utils import reward_sparse
 import numpy as np
 import random
 import json
@@ -13,9 +14,6 @@ import json
 class NavEnvV1(BaseNavEnv):
     def __init__(self,config) -> None:
         super().__init__(config)
-        
-    def reward(self):
-        return 0
     
     def _setup(self):
         # steup robot
