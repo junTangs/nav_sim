@@ -1,0 +1,32 @@
+{
+
+    "human":[
+        {
+            "x":2.3,
+            "y":2,
+            "theta": 0,
+            "max_speed": 1,
+            "r":0.5,
+            "image":"images/obstacle.png",
+            "is_random": false
+        },
+        {
+            "x":2.3,
+            "y":2,
+            "theta": 0,
+            "max_speed": 1,
+            "r":0.5,
+            "image":"images/obstacle.png",
+            "is_random": false
+        },
+        {
+            "x":2.3,
+            "y":2,
+            "theta": 0,
+            "max_speed": 1,
+            "r":0.5,
+            "image":"images/obstacle.png",
+            "is_random": false
+        }
+    ]
+}

@@ -18,3 +18,11 @@ class EntityManager:
     def clear(cls):
         cls.ENTITIES_TABLE.clear()
         ID = 0
+
+
+    @classmethod
+    def find_instance(cls,instance_class):
+        instances = cls.ENTITIES_TABLE.values()
+        return list(filter(lambda i:isinstance(i,instance_class),instances))
+
+

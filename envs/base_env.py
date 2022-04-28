@@ -48,7 +48,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.obstacles = Group()
         self.robot = None
         self.goals = Group()
-        
+        self.humans = Group()
         # states and action
         self.stack_frames = self.config['stack_frames']
         self.frames = None
@@ -127,7 +127,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         return len(self.goals) == 0
             
     def reset(self):
-
+        EntityManager.clear()
         self.setup()
         return self.states()
     

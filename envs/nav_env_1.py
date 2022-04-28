@@ -3,6 +3,7 @@ from utils.math_utils import distance,clock_angle,norm
 from entity.robot import Robot
 from entity.goal import Goal
 from entity.obstacle import Obstacle
+from entity.human import Human
 import pygame
 from utils.env_utils import collide
 import numpy as np
@@ -44,6 +45,27 @@ class NavEnvV1(BaseNavEnv):
                 if try_cnt == 10000:
                     raise Exception('Obstacle is too close to robot')
             self.obstacles.add(obstacle)
+
+        # setup crowds
+        human_config_path = self.config['human_config_path']
+        human_configs = json.load(open(human_config_path))
+        for human_config in human_configs["humans"]:
+            human = Human(human_config, self.dt, self.scare, self.coord_trans)
+
+            if human_config['is_random']:
+                try_cnt = 0
+                while (try_cnt != 10000):
+                    human.x = random.uniform(0, self.length)
+                    human.y = random.uniform(0, self.width)
+
+                    if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
+                        len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide())) == 0 and\
+                        distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
+                        break
+                    try_cnt += 1
+                if try_cnt == 10000:
+                    raise Exception('Human is too close to other entities')
+            self.humans.add(human)
         
         # setup goals
         goal_config_path = self.config['goal_config_path']
