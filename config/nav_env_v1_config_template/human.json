@@ -5,7 +5,7 @@
             "x":3,
             "y":8,
             "theta": -56,
-            "max_speed": 0.01,
+            "max_speed": 0.015,
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,

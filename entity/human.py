@@ -54,7 +54,7 @@ class Human(Sprite):
 
         self.max_speed = self.config["max_speed"]
         x = self.r * np.array((np.cos(math.radians(self.config['theta'])), np.sin(math.radians(self.config['theta']))))  # + random.uniform(-1, 1)
-        vel = normalized(-x) * self.max_speed
+        vel = normalized(x) * self.max_speed
         self.agent = Agent((self.x,self.y),(self.vx,self.vy),self.r,self.max_speed,vel)
 
         self.image = pygame.image.load(self.config['image'])
@@ -78,13 +78,16 @@ class Human(Sprite):
 
         obstacles = [Agent((obs.x,obs.y),(0,0),obs.r,0,(0,0)) for obs in EntityManager.find_instance(Obstacle)]
 
-        try:
-            new_vel,_  = orca(self.agent,humans+obstacles,10,self.dt)
-        except:
-            new_vel = (0,0)
+        new_vel,_  = orca(self.agent,humans+obstacles,self.dt*2,self.dt)
+
 
         self.vx = new_vel[0]
         self.vy = new_vel[1]
+
+        self.theta = math.atan2(self.vy,self.vx)
+        x = self.r * np.array((np.cos(math.radians(self.config['theta'])), np.sin(math.radians(self.config['theta']))))  # + random.uniform(-1, 1)
+        vel = normalized(x) * self.max_speed
+        self.agent = Agent((self.x,self.y),(self.vx,self.vy),self.r,self.max_speed,vel)
 
         self.move_d += math.sqrt(((self.vx*self.dt)**2 + (self.vy*self.dt)**2))
         if self.move_d < self.config["move_dist"]:

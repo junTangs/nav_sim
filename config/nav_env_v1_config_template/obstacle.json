@@ -2,8 +2,8 @@
 
     "obstacles":[
         {
-            "x":5,
-            "y":5,
+            "x":0,
+            "y":0,
             "r":0.5,
             "image":"images/obstacle.png",
             "is_random": false
