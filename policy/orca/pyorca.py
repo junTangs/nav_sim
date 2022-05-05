@@ -27,7 +27,7 @@ import numpy
 from numpy import array, sqrt, copysign, dot
 from numpy.linalg import det
 
-from halfplaneintersect import halfplane_optimize, Line, perp
+from policy.orca.halfplaneintersect import halfplane_optimize, Line, perp
 
 # Method:
 # For each robot A and potentially colliding robot B, compute smallest change

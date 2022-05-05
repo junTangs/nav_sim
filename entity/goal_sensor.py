@@ -10,7 +10,7 @@ class GoalSensor(Sensor):
         self.scare_trans = scare_trans
         self.coord_trans = coord_trans
         
-    def detect(self, robot_states: dict, obstacles: list,goals:list) -> dict:
+    def detect(self, robot_states: dict, obstacles: list,humans:list,goals:list) -> dict:
         self.data = {"results":[]}
         result = {"type":"goal","results" : []}
         for goal in goals:

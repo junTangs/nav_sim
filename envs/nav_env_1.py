@@ -59,7 +59,7 @@ class NavEnvV1(BaseNavEnv):
                     human.y = random.uniform(0, self.width)
 
                     if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
-                        len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide())) == 0 and\
+                        len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
                         distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
                         break
                     try_cnt += 1
@@ -97,7 +97,7 @@ class NavEnvV1(BaseNavEnv):
                         norm(robot_states['theta'],180,-180)]
         
         # observation
-        sensor_data = self.robot.detect(self.obstacles,self.goals)
+        sensor_data = self.robot.detect(self.obstacles,self.humans,self.goals)
         
         # format : [dist1,dist2,dist3,dist4,dist5,dist6,dist7,dist8] , range: (0,1) 
         obs_sensor_states = []

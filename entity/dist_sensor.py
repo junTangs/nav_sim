@@ -22,18 +22,27 @@ class DistSensor(Sensor):
         
 
 
-    def detect(self,robot_states:dict,obstacles:list,goals:list) -> dict:
+    def detect(self,robot_states:dict,obstacles:list,humans:list,goals:list) -> dict:
         x,y,r,theta = robot_states['x'],robot_states['y'],robot_states['r'],robot_states['theta']
         theta += self.theta
         theta = trans_angle(theta)
 
         
         results = self.max_distance
-        for obstacle in obstacles:
+        for obstacle  in obstacles:
             x_obs,y_obs,r_obs = obstacle.x,obstacle.y,obstacle.r
             d = line_circle_cross_cal(x,y,math.cos(math.radians(theta)),math.sin(math.radians(theta)),x_obs,y_obs,r_obs)
+
             if d != -1 and d < self.max_distance and d <= results:
                 results = d
+
+        for human in humans:
+            x_h, y_h, r_h = human.x, human.y, human.r
+            d = line_circle_cross_cal(x,y,math.cos(math.radians(theta)),math.sin(math.radians(theta)),x_h,y_h,r_h)
+            if d != -1 and d < self.max_distance and d <= results:
+                results = d
+
+
 
         results /= self.max_distance
         results = min(1,results)

@@ -111,10 +111,10 @@ class Robot(Sprite):
     def states(self):
         return {'x':self.x,'y':self.y,'r':self.r,'theta':self.theta,"vx":self.vx,"vy":self.vy,"v":self.v,"omega":self.omega}
         
-    def detect(self,obsacles:list,goals:list)-> dict:
+    def detect(self,obsacles:list,humans:list,goals:list)-> dict:
         results = {}
         for sensor,sensor_instance in self.sensors.items():
-            results[sensor] = sensor_instance.detect(self.states,obsacles,goals)
+            results[sensor] = sensor_instance.detect(self.states,obsacles,humans,goals)
             self.sensor_states[sensor] = sensor_instance.data
         return results
         

@@ -16,8 +16,10 @@ class EntityManager:
 
     @classmethod
     def clear(cls):
+        for entity in cls.ENTITIES_TABLE.items():
+            del entity
         cls.ENTITIES_TABLE.clear()
-        ID = 0
+        cls.ID = 0
 
 
     @classmethod

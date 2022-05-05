@@ -1,32 +1,85 @@
 {
 
-    "human":[
+    "humans":[
         {
-            "x":2.3,
-            "y":2,
-            "theta": 0,
-            "max_speed": 1,
-            "r":0.5,
-            "image":"images/obstacle.png",
-            "is_random": false
+            "x":3,
+            "y":8,
+            "theta": -56,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 8
         },
         {
-            "x":2.3,
-            "y":2,
-            "theta": 0,
-            "max_speed": 1,
-            "r":0.5,
-            "image":"images/obstacle.png",
-            "is_random": false
+            "x":5,
+            "y":8,
+            "theta": -90,
+            "max_speed": 0.02,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 6
         },
         {
-            "x":2.3,
+            "x":7,
+            "y":8,
+            "theta": -123,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 8
+        },
+        {
+            "x":2,
+            "y":5,
+            "theta": 9,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 6
+        },
+        {
+            "x":8,
+            "y":5,
+            "theta": -180,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 6
+        },
+        {
+            "x":3,
             "y":2,
-            "theta": 0,
-            "max_speed": 1,
-            "r":0.5,
-            "image":"images/obstacle.png",
-            "is_random": false
+            "theta": 56,
+            "max_speed": 0.02,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 8
+        },
+        {
+            "x":5,
+            "y":2,
+            "theta": 90,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 6
+        },
+        {
+            "x":7,
+            "y":2,
+            "theta": 123,
+            "max_speed": 0.01,
+            "r":0.25,
+            "image":"images/robot.png",
+            "is_random": false,
+            "move_dist": 8
         }
     ]
 }

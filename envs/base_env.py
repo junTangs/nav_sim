@@ -159,6 +159,9 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         for goal in self.goals:
             goal.update()
 
+        for human in self.humans:
+            human.update()
+
 
         done,info["done_info"] = self.is_done()
         reward = self.reward()
@@ -187,7 +190,10 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
                 obstacle.draw(self.screen)
             for goal in self.goals:
                 goal.draw(self.screen)
+            for human in self.humans:
+                human.draw(self.screen)
             self.robot.draw(self.screen)
+
 
             if mode == "human":
                 pygame.display.flip()

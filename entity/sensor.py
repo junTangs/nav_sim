@@ -8,7 +8,7 @@ class Sensor(metaclass = ABCMeta):
         self.name = name
     
     @abstractmethod
-    def detect(self,robot_states:dict,obstacles:list,goals:list)->dict:
+    def detect(self,robot_states:dict,obstacles:list,humans:list,goals:list)->dict:
         pass
     
     
