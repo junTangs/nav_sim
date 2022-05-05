@@ -13,7 +13,6 @@ env.reset()
 pprint(EntityManager.ENTITIES_TABLE)
 pprint(EntityManager.find_instance(Obstacle))
 
-for i in range(10000):
-    env.step(1)
-    env.render()
+for i in tqdm.trange(10000):
+    env.step(0)
 

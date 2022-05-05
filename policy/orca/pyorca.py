@@ -148,6 +148,7 @@ def get_avoidance_velocity(agent, collider, t, dt):
         n = normalized(w)
     return u, n
 
+
 def norm_sq(x):
     return dot(x, x)
 
