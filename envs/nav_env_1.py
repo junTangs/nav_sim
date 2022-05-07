@@ -1,3 +1,5 @@
+import numpy as np
+
 from nav_sim.envs.base_env import BaseNavEnv
 from nav_sim.utils.math_utils import distance,clock_angle,norm
 from nav_sim.entity import Robot
@@ -116,6 +118,6 @@ class NavEnvV1(BaseNavEnv):
                     goal_sensor_states_dist.append(norm(goal['distance'],self.max_distance))
                     goal_sensor_states_angle.append(norm(goal['angle'],180,-180))
 
-        return robot_states+obs_sensor_states+goal_sensor_states_dist+goal_sensor_states_angle
+        return np.array(robot_states+obs_sensor_states+goal_sensor_states_dist+goal_sensor_states_angle)
         
         

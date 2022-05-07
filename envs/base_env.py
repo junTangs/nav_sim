@@ -96,7 +96,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         init_states = self._states()
         BaseNavEnv.observation_space = Box(0,1,(self.stack_frames,len(init_states)))
         BaseNavEnv.action_space = Discrete(len(self.action_map))
-        self.frames = deque([init_states]*self.stack_frames,maxlen=self.stack_frames)
+        self.frames = deque([init_states]*self.stack_frames,maxlen=self.stack_frames+1)
+
         
         if self.seed is not None:
             random.seed(self.seed)
@@ -118,7 +119,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         return False,None
     
     def is_reach(self):
-        results = pygame.sprite.spritecollide(self.robot,self.goals,True,collide)
+        results = pygame.sprite.spritecollide(self.robot,self.goals,False,collide)
         return len(results) > 0,results
     
     def is_finished(self):
@@ -167,6 +168,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         reward = self.reward()
         
         # update frames
+
         self.frames.append(self._states())
         self.frames.popleft()
         self.t += self.dt
@@ -207,7 +209,9 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.seed = seed
     
     def states(self):
-        return np.concatenate(self.frames,axis=0)
+        frames = [np.array(f).reshape(1,-1) for f in self.frames]
+        states =  np.concatenate(frames,axis=0)
+        return states
     
     @abstractmethod
     def _states(self):
