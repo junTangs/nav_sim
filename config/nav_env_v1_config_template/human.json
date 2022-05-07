@@ -7,7 +7,7 @@
             "theta": -56,
             "max_speed": 0.015,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [7,3],
             "safe_r": 0.1
@@ -18,7 +18,7 @@
             "theta": -90,
             "max_speed": 0.02,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [5,3],
             "safe_r": 0.1
@@ -29,7 +29,7 @@
             "theta": -123,
             "max_speed": 0.01,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [3,3],
             "safe_r": 0.1
@@ -40,7 +40,7 @@
             "theta": 9,
             "max_speed": 0.01,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [8,5],
             "safe_r": 0.1
@@ -51,7 +51,7 @@
             "theta": -180,
             "max_speed": 0.01,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [2,5],
             "safe_r": 0.1
@@ -62,7 +62,7 @@
             "theta": 56,
             "max_speed": 0.02,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [7,8],
             "safe_r": 0.1
@@ -73,7 +73,7 @@
             "theta": 90,
             "max_speed": 0.01,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [5,8],
             "safe_r": 0.1
@@ -84,7 +84,7 @@
             "theta": 123,
             "max_speed": 0.01,
             "r":0.25,
-            "image":"images/robot.png",
+            "image":"images/human.png",
             "is_random": false,
             "target": [3,8],
             "safe_r": 0.1
