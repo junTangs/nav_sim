@@ -4,3 +4,4 @@ from entity.robot import Robot
 from entity.manager import EntityManager
 from entity.dist_sensor import DistSensor
 from entity.goal_sensor import GoalSensor
+from entity.human import Human

@@ -2,11 +2,25 @@
 
     "obstacles":[
         {
-            "x":0,
-            "y":0,
-            "r":0.5,
+            "x":5,
+            "y":4.8,
+            "r":0.3,
             "image":"images/obstacle.png",
-            "is_random": false
+            "is_random": true
+        },
+        {
+            "x":5,
+            "y":4.8,
+            "r":0.3,
+            "image":"images/obstacle.png",
+            "is_random": true
+        },
+                {
+            "x":5,
+            "y":4.8,
+            "r":0.3,
+            "image":"images/obstacle.png",
+            "is_random": true
         }
     ]
 }

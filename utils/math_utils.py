@@ -65,9 +65,15 @@ def symmetic_y_a(x,y,a):
 def scare(x,y,src,dst):
     return x*(dst[0]/src[0]),y*(dst[1]/src[1])
 
+
 def xy_into_display(x,y,display_size,size):
     x,y = scare(x,y,size,display_size)
     return symmetic_y_a(x,y,display_size[1]//2)
+
+@njit
+def normalize_2d(x,y):
+    sq = x**2+y**2
+    return x/math.sqrt(sq),y/math.sqrt(sq)
 
 if __name__ == "__main__":
     for i in range(100000):

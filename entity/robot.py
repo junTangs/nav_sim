@@ -41,6 +41,8 @@ class Robot(Sprite):
 
         self.trace = deque()
         self.display_trace = deque()
+
+        self.agent_id = 0
         
         self.setup()
     

@@ -15,6 +15,7 @@ from functools import partial
 from pygame.locals import *
 from entity.manager import EntityManager
 from utils.reward_utils import REWARD_FACTORY
+from entity import Human
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -28,10 +29,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.width = self.config['width'] # m:y
         self.length = self.config['length'] # m:x 
         self.max_distance = math.sqrt(self.width**2+self.length**2)
-    
 
- 
-        
         # display parameters
         self.is_render = self.config['is_render']
         
@@ -75,6 +73,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.obstacles = Group()
         self.robot = None
         self.goals = Group()
+        self.humans = Group()
 
         # states and action
         self.stack_frames = self.config['stack_frames']
@@ -159,8 +158,9 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         for goal in self.goals:
             goal.update()
 
-        for human in self.humans:
-            human.update()
+        Human.update()
+
+
 
 
         done,info["done_info"] = self.is_done()

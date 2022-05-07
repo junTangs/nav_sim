@@ -21,10 +21,16 @@ class EntityManager:
         cls.ENTITIES_TABLE.clear()
         cls.ID = 0
 
-
     @classmethod
     def find_instance(cls,instance_class):
         instances = cls.ENTITIES_TABLE.values()
         return list(filter(lambda i:isinstance(i,instance_class),instances))
+
+
+    @classmethod
+    def counter(cls,instance_class):
+        return len(cls.find_instance(instance_class))
+
+
 
 

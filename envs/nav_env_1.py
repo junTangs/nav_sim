@@ -1,9 +1,9 @@
 from envs.base_env import BaseNavEnv
 from utils.math_utils import distance,clock_angle,norm
-from entity.robot import Robot
-from entity.goal import Goal
-from entity.obstacle import Obstacle
-from entity.human import Human
+from entity import Robot
+from entity import Goal
+from entity import Obstacle
+from entity import Human
 import pygame
 from utils.env_utils import collide
 import numpy as np
@@ -66,6 +66,8 @@ class NavEnvV1(BaseNavEnv):
                 if try_cnt == 10000:
                     raise Exception('Human is too close to other entities')
             self.humans.add(human)
+
+        Human.setup_orca()
         
         # setup goals
         goal_config_path = self.config['goal_config_path']
@@ -105,6 +107,7 @@ class NavEnvV1(BaseNavEnv):
         goal_sensor_states_dist = []
         #format :[angle1,angle2,angle3,angle4,angle5,angle6,angle7,angle8] , range: (-1,1)
         goal_sensor_states_angle = []
+
         for sensor_name,data in sensor_data.items():
             if data['type'] == 'dist':
                 # distance between robot and obstacle

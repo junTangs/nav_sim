@@ -9,7 +9,8 @@
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [7,3],
+            "safe_r": 0.1
         },
         {
             "x":5,
@@ -19,7 +20,8 @@
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [5,3],
+            "safe_r": 0.1
         },
         {
             "x":7,
@@ -29,7 +31,8 @@
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [3,3],
+            "safe_r": 0.1
         },
         {
             "x":2,
@@ -39,7 +42,8 @@
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [8,5],
+            "safe_r": 0.1
         },
         {
             "x":8,
@@ -49,37 +53,41 @@
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [2,5],
+            "safe_r": 0.1
         },
         {
             "x":3,
-            "y":2,
+            "y":3,
             "theta": 56,
             "max_speed": 0.02,
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [7,8],
+            "safe_r": 0.1
         },
         {
             "x":5,
-            "y":2,
+            "y":3,
             "theta": 90,
             "max_speed": 0.01,
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [5,8],
+            "safe_r": 0.1
         },
         {
             "x":7,
-            "y":2,
+            "y":3,
             "theta": 123,
             "max_speed": 0.01,
             "r":0.25,
             "image":"images/robot.png",
             "is_random": false,
-            "target": [0,0]
+            "target": [3,8],
+            "safe_r": 0.1
         }
     ]
 }
