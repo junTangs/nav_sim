@@ -2,9 +2,9 @@
 from pygame.sprite import Sprite
 import pygame
 import math
-from utils.math_utils import rotate,trans_angle
-from entity.manager import EntityManager
-from entity.sensor import Sensor
+from nav_sim.utils.math_utils import rotate,trans_angle
+from nav_sim.entity.manager import EntityManager
+from nav_sim.entity.sensor import Sensor
 from collections import deque
 
 class Robot(Sprite):

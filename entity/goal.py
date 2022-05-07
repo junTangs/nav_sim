@@ -1,7 +1,7 @@
 
 from re import S
 from pygame.sprite import Sprite
-from entity.manager import EntityManager
+from nav_sim.entity.manager import EntityManager
 import pygame
 
 class Goal(Sprite):

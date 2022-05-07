@@ -6,16 +6,16 @@ from gym import Env
 from gym.spaces import Box,Discrete
 from pygame.sprite import Group
 import pygame
-from utils.env_utils import collide
+from nav_sim.utils.env_utils import collide
 import numpy as np
 from collections import deque
 import random
-from utils.math_utils import scare,xy_into_display
+from nav_sim.utils.math_utils import scare,xy_into_display
 from functools import partial
 from pygame.locals import *
-from entity.manager import EntityManager
-from utils.reward_utils import REWARD_FACTORY
-from entity import Human
+from nav_sim.entity.manager import EntityManager
+from nav_sim.utils.reward_utils import REWARD_FACTORY
+from nav_sim.entity import Human
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:

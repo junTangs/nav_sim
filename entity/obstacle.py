@@ -1,9 +1,9 @@
 
 from pygame.sprite import Sprite
 import math
-from utils.math_utils import rotate
+from nav_sim.utils.math_utils import rotate
 import pygame
-from entity.manager import EntityManager
+from nav_sim.entity.manager import EntityManager
 
 
 class Obstacle(Sprite):

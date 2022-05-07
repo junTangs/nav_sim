@@ -3,8 +3,8 @@ import math
 from re import S
 
 from pytz import NonExistentTimeError
-from utils.math_utils import line_circle_cross_cal,trans_angle
-from entity.sensor import Sensor
+from nav_sim.utils.math_utils import line_circle_cross_cal,trans_angle
+from nav_sim.entity.sensor import Sensor
 import pygame 
 
 

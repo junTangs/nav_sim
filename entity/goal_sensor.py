@@ -1,6 +1,6 @@
 from unittest import result
-from entity.sensor import Sensor
-from utils.math_utils import distance,clock_angle
+from nav_sim.entity.sensor import Sensor
+from nav_sim.utils.math_utils import distance,clock_angle
 
 
 class GoalSensor(Sensor):

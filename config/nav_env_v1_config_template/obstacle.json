@@ -5,21 +5,21 @@
             "x":5,
             "y":4.8,
             "r":0.3,
-            "image":"images/obstacle.png",
+            "image":"nav_sim/images/obstacle.png",
             "is_random": true
         },
         {
             "x":5,
             "y":4.8,
             "r":0.3,
-            "image":"images/obstacle.png",
+            "image":"nav_sim/images/obstacle.png",
             "is_random": true
         },
                 {
             "x":5,
             "y":4.8,
             "r":0.3,
-            "image":"images/obstacle.png",
+            "image":"nav_sim/images/obstacle.png",
             "is_random": true
         }
     ]

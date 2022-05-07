@@ -1,15 +1,13 @@
-from envs.base_env import BaseNavEnv
-from utils.math_utils import distance,clock_angle,norm
-from entity import Robot
-from entity import Goal
-from entity import Obstacle
-from entity import Human
+from nav_sim.envs.base_env import BaseNavEnv
+from nav_sim.utils.math_utils import distance,clock_angle,norm
+from nav_sim.entity import Robot
+from nav_sim.entity import Goal
+from nav_sim.entity import Obstacle
+from nav_sim.entity import Human
 import pygame
-from utils.env_utils import collide
-import numpy as np
+from nav_sim.utils.env_utils import collide
 import random
 import json
-
 
 class NavEnvV1(BaseNavEnv):
     def __init__(self,config) -> None:

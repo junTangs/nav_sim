@@ -1,11 +1,11 @@
 from pygame.sprite import Sprite
 import math
-from utils.math_utils import normalize_2d
+from nav_sim.utils.math_utils import normalize_2d
 import pygame
-from entity.manager import EntityManager
+from nav_sim.entity.manager import EntityManager
 import numpy as np
-from entity.obstacle import Obstacle
-from entity.robot import Robot
+from nav_sim.entity.obstacle import Obstacle
+from nav_sim.entity.robot import Robot
 
 import rvo2
 
@@ -91,6 +91,7 @@ class Human(Sprite):
 
         humans = EntityManager.find_instance(Human)
         robot = EntityManager.find_instance(Robot)[0]
+
         obstacles = EntityManager.find_instance(Obstacle)
 
         cls.max_neighbors = EntityManager.counter(Human)+\
@@ -173,7 +174,3 @@ class Human(Sprite):
         self.setup()
 
 
-if __name__ == "__main__":
-    x =  np.array((np.cos(math.radians(90)), np.sin(math.radians(90))))  # + random.uniform(-1, 1)
-    vel = normalized(-x)
-    print(x,vel)

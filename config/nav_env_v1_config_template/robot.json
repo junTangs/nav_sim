@@ -9,7 +9,7 @@
     "omega_max": 1,
     "omega_min": -1,
     "is_random": false,
-    "image":"images/robot.png",
+    "image":"nav_sim/images/robot.png",
     "sensor":[
         {
             "type":"dist",
