@@ -30,44 +30,47 @@ class NavEnvV1(BaseNavEnv):
         # setup obstacles
         obstacle_config_path = self.config['obstacle_config_path']
         obstacle_configs = json.load(open(obstacle_config_path))
-        for obstacle_config in obstacle_configs["obstacles"]:
-            obstacle = Obstacle(obstacle_config,self.dt,self.scare,self.coord_trans)
-            
-            if obstacle_config['is_random']:
-                try_cnt  = 0
-                while(try_cnt != 10000):
-                    obstacle.x = random.uniform(0,self.length)
-                    obstacle.y = random.uniform(0,self.width)
 
-                    if distance(obstacle.x,obstacle.y,robot.x,robot.y) > obstacle.r+ robot.r:
-                        break
-                    try_cnt += 1
-                if try_cnt == 10000:
-                    raise Exception('Obstacle is too close to robot')
-            self.obstacles.add(obstacle)
+        if len(obstacle_configs["obstacles"])!= 0:
+            for obstacle_config in obstacle_configs["obstacles"]:
+                obstacle = Obstacle(obstacle_config,self.dt,self.scare,self.coord_trans)
+
+                if obstacle_config['is_random']:
+                    try_cnt  = 0
+                    while(try_cnt != 10000):
+                        obstacle.x = random.uniform(0,self.length)
+                        obstacle.y = random.uniform(0,self.width)
+
+                        if distance(obstacle.x,obstacle.y,robot.x,robot.y) > obstacle.r+ robot.r:
+                            break
+                        try_cnt += 1
+                    if try_cnt == 10000:
+                        raise Exception('Obstacle is too close to robot')
+                self.obstacles.add(obstacle)
 
         # setup crowds
         human_config_path = self.config['human_config_path']
         human_configs = json.load(open(human_config_path))
-        for human_config in human_configs["humans"]:
-            human = Human(human_config, self.dt, self.scare, self.coord_trans)
+        if len(human_configs["humans"])!= 0:
+            for human_config in human_configs["humans"]:
+                human = Human(human_config, self.dt, self.scare, self.coord_trans)
 
-            if human_config['is_random']:
-                try_cnt = 0
-                while (try_cnt != 10000):
-                    human.x = random.uniform(0, self.length)
-                    human.y = random.uniform(0, self.width)
+                if human_config['is_random']:
+                    try_cnt = 0
+                    while (try_cnt != 10000):
+                        human.x = random.uniform(0, self.length)
+                        human.y = random.uniform(0, self.width)
 
-                    if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
-                        len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
-                        distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
-                        break
-                    try_cnt += 1
-                if try_cnt == 10000:
-                    raise Exception('Human is too close to other entities')
-            self.humans.add(human)
+                        if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
+                            len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
+                            distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
+                            break
+                        try_cnt += 1
+                    if try_cnt == 10000:
+                        raise Exception('Human is too close to other entities')
+                self.humans.add(human)
 
-        Human.setup_orca()
+            Human.setup_orca()
         
         # setup goals
         goal_config_path = self.config['goal_config_path']

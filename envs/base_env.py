@@ -60,6 +60,12 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.collide_detail = None
         self.finish_flag = False
 
+
+        # reward history info
+
+        self.rwd_hst = {}
+
+
         # reward function
         self.reward_fn = None
 
@@ -81,12 +87,18 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.action_map = self.config['action_map']
         self.seed = self.config['seed']
 
+
         self.is_set_up = False
+
+        self.t = 0 # s
+        self.step_count = 0
 
         # recoder
         self.collide_flag = False
         self.collide_detail = None
         self.finish_flag = False
+        self.rwd_hst = {}
+
 
         self._setup()
         
@@ -104,6 +116,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             np.random.seed(self.seed)
 
         self.reward_fn = REWARD_FACTORY[self.config["reward_fn"]]
+        self.reward(init=True,states = init_states)
         self.is_set_up = True
         
         
@@ -111,21 +124,30 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
 
         results = pygame.sprite.spritecollide(self.robot,self.obstacles,False,collide)
         bound_results =  self.robot.x <= self.robot.r or self.robot.x >= self.length - self.robot.r or self.robot.y <= self.robot.r or self.robot.y >= self.width - self.robot.r
+        human_results = pygame.sprite.spritecollide(self.robot,self.humans,False,collide)
 
         if len(results)>0:
             return True,{"collide":"obstacle","details":results}
         if bound_results:
             return True,{"collide":"bound","details":bound_results}
+        if len(human_results)>0:
+            return True,{"collide":"human","details":human_results}
         return False,None
     
     def is_reach(self):
         results = pygame.sprite.spritecollide(self.robot,self.goals,False,collide)
+        for result in results:
+            result.reach()
         return len(results) > 0,results
     
     def is_finished(self):
         self.is_reach()
-        return len(self.goals) == 0
-            
+        goal_reach = [goal.is_reach for goal in self.goals]
+        if all(goal_reach) is True:
+            return True
+        else:
+            return False
+
     def reset(self):
         EntityManager.clear()
         self.setup()
@@ -162,21 +184,18 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         Human.update()
 
 
-
-
         done,info["done_info"] = self.is_done()
-        reward = self.reward()
-        
-        # update frames
 
-        self.frames.append(self._states())
+        # update frames
+        states = self._states()
+        self.frames.append(states)
         self.frames.popleft()
         self.t += self.dt
         self.step_count += 1
         
         info["time"] = self.t
         info["step"] = self.step_count
-        
+        reward = self.reward(states = states)
         return self.states(),reward,done,info
 
 

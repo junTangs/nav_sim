@@ -43,6 +43,7 @@ class Robot(Sprite):
         self.display_trace = deque()
 
         self.agent_id = 0
+
         
         self.setup()
     
@@ -106,9 +107,6 @@ class Robot(Sprite):
         screen.blit(self.display_image, self.rect)
 
 
-
-
-           
     @property
     def states(self):
         return {'x':self.x,'y':self.y,'r':self.r,'theta':self.theta,"vx":self.vx,"vy":self.vy,"v":self.v,"omega":self.omega}

@@ -3,10 +3,10 @@
 
         {
             "x":3,
-            "y":2,
+            "y":2.2,
             "r":0.1,
             "image":"nav_sim/images/goal.png",
-            "is_random": false
+            "is_random": true
         }
 
 

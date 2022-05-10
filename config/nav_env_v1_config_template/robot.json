@@ -1,6 +1,6 @@
 {
 
-    "x": 1,
+    "x": 3,
     "y": 2,
     "r": 0.5,
     "theta": 0,
@@ -8,7 +8,7 @@
     "v_min": -1,
     "omega_max": 1,
     "omega_min": -1,
-    "is_random": false,
+    "is_random": true,
     "image":"nav_sim/images/robot.png",
     "sensor":[
         {

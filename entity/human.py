@@ -18,6 +18,7 @@ class Human(Sprite):
     time_horizon = 0
     time_horizon_obs = 0
 
+    human_exist = False
     update_lock = False
     def __init__(self, config, dt, scare_trans, coord_trans) -> None:
         super().__init__()
@@ -77,7 +78,7 @@ class Human(Sprite):
         self.display_image = pygame.transform.rotate(self.image, self.theta)
         self.rect = self.display_image.get_rect()
         self.rect.center = self.coord_trans(self.x,self.y)
-
+        self.human_exist = True
         EntityManager.register(self)
 
 
@@ -147,7 +148,8 @@ class Human(Sprite):
 
     @classmethod
     def update(cls):
-        cls.update_orca()
+        if cls.human_exist:
+            cls.update_orca()
         return
 
     def move(self,target):

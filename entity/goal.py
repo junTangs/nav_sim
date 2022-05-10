@@ -21,10 +21,12 @@ class Goal(Sprite):
         self.coord_trans = coord_trans
         self.scare_trans = scare_trans
         self.setup()
+        self.is_reach = False
         
     
     def setup(self):
          # appearance
+        self.is_reach = False
         self.image = pygame.image.load(self.config['image'])
         self.image = pygame.transform.smoothscale(self.image,self.scare_trans(self.r*2,self.r*2))
 
@@ -42,4 +44,7 @@ class Goal(Sprite):
 
     
     def update(self):
-        pass 
+        pass
+
+    def reach(self):
+        self.is_reach = True

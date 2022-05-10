@@ -12,6 +12,10 @@ def distance(x1,y1,x2,y2):
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
 @njit
+def gaussian(x,sigma = 10):
+    return math.e**(-x**2/(2*sigma**2))
+
+@njit
 def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     # M = P-C
     m_0 = x - c_x
