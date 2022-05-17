@@ -6,7 +6,7 @@ from entity.manager import EntityManager
 from entity import Obstacle,Human
 
 
-config_path = r'config/nav_env_v1_config_template/env.json'
+config_path = r'/home/juntang/桌面/code/config/env_config/env.json'
 config = json.load(open(config_path))
 env = NavEnvV1(config)
 env.reset()

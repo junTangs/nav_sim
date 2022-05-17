@@ -15,6 +15,7 @@ from functools import partial
 from pygame.locals import *
 from nav_sim.entity.manager import EntityManager
 from nav_sim.utils.reward_utils import REWARD_FACTORY
+from nav_sim.utils.states_wrapper import STATE_WRAPPER_FACTORTY
 from nav_sim.entity import Human
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
@@ -50,6 +51,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # states and action
         self.stack_frames = self.config['stack_frames']
         self.frames = None
+        self.states_wrapper = None
         self.action_map = self.config['action_map']
         self.seed = self.config['seed']
 
@@ -71,7 +73,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
 
         
         self.setup()
-        
+
+
                         
     def setup(self):
 
@@ -84,6 +87,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # states and action
         self.stack_frames = self.config['stack_frames']
         self.frames = None
+        self.states_wrapper = STATE_WRAPPER_FACTORTY[self.config["state_wrapper"]]
         self.action_map = self.config['action_map']
         self.seed = self.config['seed']
 
@@ -228,9 +232,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.seed = seed
     
     def states(self):
-        frames = [np.array(f).reshape(1,-1) for f in self.frames]
-        states =  np.concatenate(frames,axis=0)
-        return states
+
+        return self.states_wrapper(self.frames)
     
     @abstractmethod
     def _states(self):

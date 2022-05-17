@@ -58,6 +58,10 @@ def norm(x,max_x,min_x = 0):
     return (x-min_x)/(max_x-min_x)
 
 @njit
+def recover_norm(norm_x,max_x,min_x = 0):
+    return norm_x*(max_x - min_x)+min_x
+
+@njit
 def trans_angle(angle):
     return 180 - (180-angle)%360
 

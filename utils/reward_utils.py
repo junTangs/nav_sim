@@ -4,6 +4,7 @@ from numba import njit
 
 
 
+
 @njit
 def att_filed(x1,y1,x2,y2,a):
     return 0.5*a*distance(x1,y1,x2,y2)**2
@@ -56,48 +57,7 @@ def sparse_reward(instance,*args,**kwargs):
         return r
 
 
-def cal_poten(min_dist_sensor,dist,a,b):
-    atten = 0.5*a*dist**2
-    rep = b*gaussian(min_dist_sensor,0.3)
-    return atten+rep
-
-
-def sparse_rewardII(instance,*args,**kwargs):
-    collide = instance.collide_flag
-    finish = instance.finish_flag
-    states = kwargs.get("states")
-
-    x = states[0]
-    y = states[1]
-    v = states[2]
-    w = states[3]
-    theta = states[4]
-    obs_sensor = states[5:5+8]
-    dist = states[-2]
-    angle = states[-1]
-
-
-    if kwargs.get("init",False):
-        instance.rwd_hst["lst_poten"] =cal_poten(min(obs_sensor),dist,10,10)
-        instance.rwd_hst["v"] = v
-        instance.rwd_hst["omega"] = w
-        return 0
-    else:
-        poten =  cal_poten(min(obs_sensor),dist,10,10)
-        r = 10*(instance.rwd_hst["lst_poten"] - poten)
-        r -= abs(v - instance.rwd_hst["v"]) ** 2 + abs(w - instance.rwd_hst["omega"]) ** 2
-
-        instance.rwd_hst["lst_poten"] = poten
-        instance.rwd_hst["v"] = v
-        instance.rwd_hst["omega"] = w
-
-        if collide:
-            return  -10
-        if finish:
-            return  500
-
-        return r
 
 
 
-REWARD_FACTORY["sparse"] = sparse_rewardII
+REWARD_FACTORY["sparse"] = sparse_reward

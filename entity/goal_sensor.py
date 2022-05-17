@@ -1,4 +1,3 @@
-from unittest import result
 from nav_sim.entity.sensor import Sensor
 from nav_sim.utils.math_utils import distance,clock_angle
 

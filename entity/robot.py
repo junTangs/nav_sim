@@ -16,8 +16,8 @@ class Robot(Sprite):
         self.r = self.config['r'] # m
         
         # inherit parameters
-        self.vx = math.cos(self.config['theta'])
-        self.vy = math.sin(self.config['theta'])
+        self.vx = math.cos(math.radians(self.config['theta']))
+        self.vy = math.sin(math.radians(self.config['theta']))
         self.theta = self.config['theta']
         self.v = 0 # m/s
         self.omega = 0 # rad/s

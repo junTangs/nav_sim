@@ -6,6 +6,7 @@ from nav_sim.entity import Robot
 from nav_sim.entity import Goal
 from nav_sim.entity import Obstacle
 from nav_sim.entity import Human
+from nav_sim.utils.kde_utils import density_map
 import pygame
 from nav_sim.utils.env_utils import collide
 import random
@@ -26,7 +27,8 @@ class NavEnvV1(BaseNavEnv):
             robot.y = random.uniform(0,self.width)
             robot.theta = random.uniform(-180,180)
         self.robot = robot
-        
+
+
         # setup obstacles
         obstacle_config_path = self.config['obstacle_config_path']
         obstacle_configs = json.load(open(obstacle_config_path))
@@ -60,6 +62,8 @@ class NavEnvV1(BaseNavEnv):
                     while (try_cnt != 10000):
                         human.x = random.uniform(0, self.length)
                         human.y = random.uniform(0, self.width)
+                        human.target[0] = random.uniform(0, self.length)
+                        human.target[1] = random.uniform(0, self.width)
 
                         if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
                             len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
@@ -95,8 +99,7 @@ class NavEnvV1(BaseNavEnv):
         # format:  {"x":0,"y":0,"r":0,"v":0,"omega":0,"theta":0}
         robot_states = self.robot.states
 
-        robot_states = [robot_states['x']/self.length,
-                        robot_states['y']/self.width,
+        robot_states = [
                         norm(robot_states['v'],self.robot.v_max,self.robot.v_min),
                         norm(robot_states['omega'],self.robot.omega_max,self.robot.omega_min),
                         norm(robot_states['theta'],180,-180)]
@@ -110,6 +113,8 @@ class NavEnvV1(BaseNavEnv):
         goal_sensor_states_dist = []
         #format :[angle1,angle2,angle3,angle4,angle5,angle6,angle7,angle8] , range: (-1,1)
         goal_sensor_states_angle = []
+        # format: [pos_x,pos_y,......] range: (0,1)
+        human_pos = []
 
         for sensor_name,data in sensor_data.items():
             if data['type'] == 'dist':
@@ -120,7 +125,19 @@ class NavEnvV1(BaseNavEnv):
                 for goal in data['results']:
                     goal_sensor_states_dist.append(norm(goal['distance'],self.max_distance))
                     goal_sensor_states_angle.append(norm(goal['angle'],180,-180))
+            elif data['type'] == "human":
+                # human states
+                for human_pos in data["results"]:
+                    human_pos.append(human_pos[0])
+                    human_pos.append(human_pos[1])
+                map = data["map"]
 
-        return np.array(robot_states+obs_sensor_states+goal_sensor_states_dist+goal_sensor_states_angle)
+
+        return {"robot_states":robot_states,
+                "obs_states":obs_sensor_states,
+                "goal_dist":goal_sensor_states_dist,
+                "goal_angle":goal_sensor_states_angle,
+                "human_pos":human_pos,
+                "map":map}
         
         

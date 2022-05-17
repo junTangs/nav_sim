@@ -78,7 +78,6 @@ class Human(Sprite):
         self.display_image = pygame.transform.rotate(self.image, self.theta)
         self.rect = self.display_image.get_rect()
         self.rect.center = self.coord_trans(self.x,self.y)
-        self.human_exist = True
         EntityManager.register(self)
 
 
@@ -93,29 +92,30 @@ class Human(Sprite):
         humans = EntityManager.find_instance(Human)
         robot = EntityManager.find_instance(Robot)[0]
 
-        obstacles = EntityManager.find_instance(Obstacle)
+        if len(humans) !=0:
+            obstacles = EntityManager.find_instance(Obstacle)
 
-        cls.max_neighbors = EntityManager.counter(Human)+\
-                            EntityManager.counter(Robot)+\
-                            EntityManager.counter(Obstacle)
+            cls.max_neighbors = EntityManager.counter(Human)+\
+                                EntityManager.counter(Robot)+\
+                                EntityManager.counter(Obstacle)
 
-        params = cls.neighbor_dist, cls.max_neighbors, cls.time_horizon, cls.time_horizon_obs
+            params = cls.neighbor_dist, cls.max_neighbors, cls.time_horizon, cls.time_horizon_obs
 
-        cls.sim = rvo2.PyRVOSimulator(humans[0].dt,*params,1.2*humans[0].r,humans[0].max_speed)
+            cls.sim = rvo2.PyRVOSimulator(humans[0].dt,*params,1.2*humans[0].r,humans[0].max_speed)
 
-        for human in humans:
-            human.agent_id = cls.sim.addAgent((human.x,human.y), *params, human.r + 0.01 + human.safe_r,
-                              human.max_speed, (human.vx,human.vy))
+            for human in humans:
+                human.agent_id = cls.sim.addAgent((human.x,human.y), *params, human.r + 0.01 + human.safe_r,
+                                  human.max_speed, (human.vx,human.vy))
 
 
-        robot.agent_id = cls.sim.addAgent((robot.x, robot.y), *params, 1.5*robot.r,
-                         robot.v_max, (robot.vx, robot.vy))
+            robot.agent_id = cls.sim.addAgent((robot.x, robot.y), *params, 1.5*robot.r,
+                             robot.v_max, (robot.vx, robot.vy))
 
-        for obstacle in obstacles:
-            x,y,r = obstacle.x,obstacle.y,obstacle.r
-            pt = [(x + r,y+r),(x-r,y+r),(x-r,y-r),(x+r,y-r)]
-            cls.sim.addObstacle(pt)
-            cls.sim.processObstacles()
+            for obstacle in obstacles:
+                x,y,r = obstacle.x,obstacle.y,obstacle.r
+                pt = [(x + r,y+r),(x-r,y+r),(x-r,y-r),(x+r,y-r)]
+                cls.sim.addObstacle(pt)
+                cls.sim.processObstacles()
 
 
         cls.update_lock = True
@@ -148,8 +148,7 @@ class Human(Sprite):
 
     @classmethod
     def update(cls):
-        if cls.human_exist:
-            cls.update_orca()
+        cls.update_orca()
         return
 
     def move(self,target):
