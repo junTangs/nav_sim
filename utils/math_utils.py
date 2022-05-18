@@ -12,6 +12,10 @@ def distance(x1,y1,x2,y2):
     return math.sqrt((x1-x2)**2 + (y1-y2)**2)
 
 @njit
+def manhattan_distance(x1,y1,x2,y2):
+    return abs(x1 - x2)+abs(y1 - y2)
+
+@njit
 def gaussian(x,sigma = 10):
     return math.e**(-x**2/(2*sigma**2))
 

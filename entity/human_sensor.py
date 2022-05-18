@@ -41,8 +41,6 @@ class HumanSensor(Sensor):
 
         map = density_map(self.density_map_height,self.density_map_width,map_samples,self.r*12.8)
         map = map[::-1,:]
-        plt.imshow(map)
-        plt.show()
         self.data["results"] = results["results"]
         results["map"] = map
         self.data["map"] = map
