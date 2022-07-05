@@ -127,11 +127,12 @@ class NavEnvV1(BaseNavEnv):
                     goal_sensor_states_angle.append(norm(goal['angle'],180,-180))
             elif data['type'] == "human":
                 # human states
-                for human_pos in data["results"]:
-                    human_pos.append(human_pos[0])
-                    human_pos.append(human_pos[1])
-                map = data["map"]
+                for hs in data["results"]:
+                    for i in range(len(hs)):
+                        human_pos.append(hs[i])
 
+
+                map = data["map"]
 
         return {"robot_states":robot_states,
                 "obs_states":obs_sensor_states,

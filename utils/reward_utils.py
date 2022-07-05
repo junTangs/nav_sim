@@ -10,13 +10,13 @@ def att_filed(x1,y1,x2,y2,a):
     return 0.5*a*distance(x1,y1,x2,y2)**2
 
 @njit
-def rep_filed(x1,y1,x2,y2,r,a):
-    dist = distance(x1,y1,x2,y2)
+def rep_filed(x1,y1,x2,y2,r,r2,a):
+    dist = distance(x1,y1,x2,y2) - (r + r2)
     # if dist <= r:
     #     return 0.5*a*(1/dist - 1/r)**2
     # else:
     #     return 0
-    return gaussian(dist,r)
+    return gaussian(dist,r2)
 
 def cal_apf(goals,obstacles,humans,robot):
     att = 0
@@ -25,9 +25,9 @@ def cal_apf(goals,obstacles,humans,robot):
          att += att_filed(g.x,g.y,robot.x,robot.y,1)
 
     for obs in obstacles:
-        rep = 5*max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,1),rep)
+        rep = 5*max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,robot.r,1),rep)
     for h in humans:
-        rep  = 5*max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,1),rep)
+        rep  = 5*max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,robot.r,1),rep)
     rep = min(5,rep)
     return att+rep
 
@@ -44,7 +44,7 @@ def sparse_reward(instance,*args,**kwargs):
     else:
         poten =  cal_apf(instance.goals,instance.obstacles,instance.humans,instance.robot)
         r = 10*(instance.rwd_hst["lst_poten"] - poten)
-        r -= abs(instance.robot.v - instance.rwd_hst["v"]) ** 2 + abs(instance.robot.omega - instance.rwd_hst["omega"]) ** 2
+        r -= abs(instance.robot.v - instance.rwd_hst["v"])+ abs(instance.robot.omega - instance.rwd_hst["omega"])
 
         instance.rwd_hst["lst_poten"] = poten
         instance.rwd_hst["v"] = instance.robot.v

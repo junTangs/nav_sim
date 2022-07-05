@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 
 def rs_s_g_wrapper(frames):
     frames = [np.array(f["robot_states"]+\
-                       f["obs_states"]+\
                        f["goal_dist"]+\
-                       f["goal_angle"]).reshape(1, -1) for f in frames]
+                       f["goal_angle"]+ \
+                       f["obs_states"]
+                       ).reshape(1, -1) for f in frames]
 
 
     states = np.concatenate(frames, axis=0)
@@ -20,9 +21,20 @@ def rs_d_g_wrapper(frames):
                        f["goal_dist"]+\
                        f["goal_angle"]).reshape(1, -1) for f in frames]
 
-
     maps = [np.expand_dims(f["map"],0) for f in frames]
     states = np.concatenate(states, axis=0)
     maps = np.concatenate(maps, axis=0)
     return {"states":states,"density_maps":maps}
 STATE_WRAPPER_FACTORTY["rs_d_g"] = rs_d_g_wrapper
+
+
+def rs_h_g_wrapper(frames):
+    frames = [np.array(f["robot_states"]+\
+                       f["goal_dist"]+\
+                       f["goal_angle"]+ \
+                       f["human_pos"]
+                       ).reshape(1, -1) for f in frames]
+
+    states = np.concatenate(frames, axis=0)
+    return {"states":states}
+STATE_WRAPPER_FACTORTY["rs_h_g"] = rs_h_g_wrapper

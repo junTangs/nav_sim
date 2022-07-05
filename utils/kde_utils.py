@@ -38,15 +38,13 @@ def density_map(height, width, samples, bandwidth = 0.1):
         return res
     for i in range(0,len(samples),2):
         res += gaussian_kernel(height, width, samples[i], samples[i + 1], bandwidth)
-
-    res = res - res.min()/(res.max() - res.min())
     return res
 
 
 
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
-    res  = density_map(128,128,[12,12,32,43],10)
+    res  = density_map(64,64,[12,12,32,43],10)
     print(res)
     plt.imshow(res)
     plt.show()
