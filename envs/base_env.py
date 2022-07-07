@@ -14,8 +14,8 @@ from nav_sim.utils.math_utils import scare,xy_into_display
 from functools import partial
 from pygame.locals import *
 from nav_sim.entity.manager import EntityManager
-from nav_sim.utils.reward_utils import REWARD_FACTORY
-from nav_sim.utils.states_wrapper import STATE_WRAPPER_FACTORTY
+from nav_sim.utils.reward import REWARDS
+from nav_sim.utils.state import STATES
 from nav_sim.entity import Human
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
@@ -87,7 +87,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # states and action
         self.stack_frames = self.config['stack_frames']
         self.frames = None
-        self.states_wrapper = STATE_WRAPPER_FACTORTY[self.config["state_wrapper"]]
+        self.states_wrapper = STATES[self.config["state_wrapper"]]()
         self.action_map = self.config['action_map']
         self.seed = self.config['seed']
 
@@ -119,8 +119,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             random.seed(self.seed)
             np.random.seed(self.seed)
 
-        self.reward_fn = REWARD_FACTORY[self.config["reward_fn"]]
-        self.reward(init=True,states = init_states)
+        self.reward_fn = REWARDS[self.config["reward_fn"]]()
+        self.reward_fn.setup(self.goals,self.obstacles,self.humans,self.robot)
         self.is_set_up = True
         
         
@@ -199,7 +199,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         
         info["time"] = self.t
         info["step"] = self.step_count
-        reward = self.reward(states = states)
+        reward = self.reward()
         return self.states(),reward,done,info
 
 
@@ -232,16 +232,15 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.seed = seed
     
     def states(self):
-
-        return self.states_wrapper(self.frames)
+        return self.states_wrapper.wrapper(self.frames)
     
     @abstractmethod
     def _states(self):
         pass
     
 
-    def reward(self,*args,**kwargs):
-        return self.reward_fn(self,*args,**kwargs)
+    def reward(self):
+        return self.reward_fn.reward(self.goals,self.obstacles,self.humans,self.robot,self.finish_flag,self.collide_flag)
     
     def save(self,path):
         file = open(path,'w')
@@ -257,6 +256,3 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     
     def action(self,action):
         return self.action_map[str(action)]
-
-    def set_reward_fn(self,reward_fn:callable):
-        self.reward_fn = reward_fn
