@@ -6,7 +6,6 @@ from nav_sim.entity import Robot
 from nav_sim.entity import Goal
 from nav_sim.entity import Obstacle
 from nav_sim.entity import Human
-from nav_sim.utils.kde_utils import density_map
 import pygame
 from nav_sim.utils.env_utils import collide
 import random
@@ -122,6 +121,9 @@ class NavEnvV1(BaseNavEnv):
         # format: [pos_x,pos_y,......] range: (x_range,y_range)
         human_pos = []
 
+        goal_sensor_states_x = []
+        goal_sensor_states_y = []
+
         for sensor_name,data in sensor_data.items():
             if data['type'] == 'dist':
                 # distance between robot and obstacle
@@ -131,13 +133,13 @@ class NavEnvV1(BaseNavEnv):
                 for goal in data['results']:
                     goal_sensor_states_dist.append(goal['distance'])
                     goal_sensor_states_angle.append(goal['angle'])
+                    goal_sensor_states_x.append(goal["x"])
+                    goal_sensor_states_y.append(goal["y"])
             elif data['type'] == "human":
                 # human states
                 for hs in data["results"]:
                     for i in range(len(hs)):
                         human_pos.append(hs[i])
-                        print(human_pos)
-
 
                 map = data["map"]
 
@@ -145,6 +147,8 @@ class NavEnvV1(BaseNavEnv):
                 "obs_states":obs_sensor_states,
                 "goal_dist":goal_sensor_states_dist,
                 "goal_angle":goal_sensor_states_angle,
+                "goal_x":goal_sensor_states_x,
+                "goal_y":goal_sensor_states_y,
                 "human_pos":human_pos,
                 "map":map}
         
