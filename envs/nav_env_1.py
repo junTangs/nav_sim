@@ -11,6 +11,7 @@ import pygame
 from nav_sim.utils.env_utils import collide
 import random
 import json
+import math
 
 class NavEnvV1(BaseNavEnv):
     def __init__(self,config) -> None:
@@ -100,20 +101,25 @@ class NavEnvV1(BaseNavEnv):
         robot_states = self.robot.states
 
         robot_states = [
-                        norm(robot_states['v'],self.robot.v_max,self.robot.v_min),
-                        norm(robot_states['omega'],self.robot.omega_max,self.robot.omega_min),
-                        norm(robot_states['theta'],180,-180)]
+                        robot_states['x'],
+                        robot_states['y'],
+                        robot_states['r'],
+                        robot_states['v'],
+                        robot_states['omega'],
+                        robot_states['theta']
+                        ]
+
         
         # observation
         sensor_data = self.robot.detect(self.obstacles,self.humans,self.goals)
         
-        # format : [dist1,dist2,dist3,dist4,dist5,dist6,dist7,dist8] , range: (0,1) 
+        # format : [dist1,dist2,dist3,dist4,dist5,dist6,dist7,dist8] , range: (0,max_distance) 
         obs_sensor_states = []
-        # format :[dist1,dist2,dist3,dist4,dist5,dist6,dist7,dist8] , range: (0,1)
+        # format :[dist1,dist2,dist3,dist4,dist5,dist6,dist7,dist8] , range: (0,max_distance)
         goal_sensor_states_dist = []
-        #format :[angle1,angle2,angle3,angle4,angle5,angle6,angle7,angle8] , range: (-1,1)
+        #format :[angle1,angle2,angle3,angle4,angle5,angle6,angle7,angle8] , range: (-180,180)
         goal_sensor_states_angle = []
-        # format: [pos_x,pos_y,......] range: (0,1)
+        # format: [pos_x,pos_y,......] range: (x_range,y_range)
         human_pos = []
 
         for sensor_name,data in sensor_data.items():
@@ -123,13 +129,14 @@ class NavEnvV1(BaseNavEnv):
             elif data['type'] == 'goal':
                 # distance between robot and goal
                 for goal in data['results']:
-                    goal_sensor_states_dist.append(norm(goal['distance'],self.max_distance))
-                    goal_sensor_states_angle.append(norm(goal['angle'],180,-180))
+                    goal_sensor_states_dist.append(goal['distance'])
+                    goal_sensor_states_angle.append(goal['angle'])
             elif data['type'] == "human":
                 # human states
                 for hs in data["results"]:
                     for i in range(len(hs)):
                         human_pos.append(hs[i])
+                        print(human_pos)
 
 
                 map = data["map"]

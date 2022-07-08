@@ -16,6 +16,7 @@ class HumanSensor(Sensor):
         self.density_map_height = config["map_height"]
         self.use_density_map = config["density_map"]
         self.out_num = config["out_num"]
+        self.is_sort = config["sort"]
         self.data = None
         self.scare_trans = scare_trans
         self.coord_trans = coord_trans
@@ -42,12 +43,8 @@ class HumanSensor(Sensor):
                 map_samples.append((self.density_map_width // 2 + dx * self.density_map_width*0.5/ self.r))
                 map_samples.append((self.density_map_height // 2 + dy * self.density_map_height*0.5/ self.r))
 
-                dist = norm(dist, self.r, 0)
-                angle = norm(angle, math.pi, -math.pi)
-                r = human.r / robot_states["r"]
-                h_vx = human.vx / vx
-                h_vy = human.vy / vy
-                results["results"].append([angle, dist, h_vx, h_vy, r, 0])
+
+                results["results"].append([angle, dist, human.vx, human.vy, human.r, human.x,human.y])
                 if len(results["results"]) >= self.out_num:
                     break
 
@@ -57,10 +54,12 @@ class HumanSensor(Sensor):
         else:
             map = None
 
-        results["results"] = sorted(results["results"], key=lambda x: (x[2], x[1], x[0]))
+
+        if self.is_sort:
+            results["results"] = sorted(results["results"], key=lambda x: (x[2], x[1], x[0]))
 
         if len(results["results"]) < self.out_num:
-            results["results"].extend([[0, 0, 0, 0, 0, 1]] * (self.out_num - len(results["results"])))
+            results["results"].extend([[0, 0, 0, 0, 0, 0, 0]] * (self.out_num - len(results["results"])))
         self.data["results"] = results["results"]
 
         results["map"] = map

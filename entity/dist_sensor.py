@@ -41,8 +41,7 @@ class DistSensor(Sensor):
 
 
 
-        results /= self.max_distance
-        results = min(1,results)
+        results = min(self.max_distance,results)
         results = max(0,results)
 
         self.data = {"x":x,"y":y,"r":r,"theta":theta,"results":results}
