@@ -1,3 +1,5 @@
+import math
+
 from nav_sim.entity.sensor import Sensor
 from nav_sim.utils.math_utils import distance,clock_angle
 
@@ -12,9 +14,11 @@ class GoalSensor(Sensor):
     def detect(self, robot_states: dict, obstacles: list,humans:list,goals:list) -> dict:
         self.data = {"results":[]}
         result = {"type":"goal","results" : []}
+        vx = math.cos(robot_states["theta"])
+        vy = math.sin(robot_states["theta"])
         for goal in goals:
             d = distance(robot_states['x'],robot_states['y'],goal.x,goal.y)
-            angle = clock_angle(robot_states['vx'],robot_states['vy'],goal.x - robot_states["x"],goal.y - robot_states["y"])
+            angle = clock_angle(vx,vy,goal.x - robot_states["x"],goal.y - robot_states["y"])
             result["results"].append({"id":goal.id,"distance":d,"angle":angle,"x":goal.x,"y":goal.y})
         self.data['results'] = result
         return result

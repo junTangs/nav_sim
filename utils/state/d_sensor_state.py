@@ -8,6 +8,8 @@ class DistSensorState(State):
         super().__init__()
 
     def wrapper(self, frames, **kwargs) -> np.ndarray:
+        # 0,1,2, 3,   4, 5, 6,  7  , 8,9,10,...
+        # x,y,r,theta,vx,vy,v,omega,pref_v,gd,gangle
         robot_goal_frames = [np.array(f["robot_states"] +
                                       f["goal_dist"] +
                                       f["goal_angle"] +

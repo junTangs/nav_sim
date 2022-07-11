@@ -2,7 +2,8 @@
 from pygame.sprite import Sprite
 import pygame
 import math
-from nav_sim.utils.math_utils import rotate,trans_angle
+from nav_sim.utils.math_utils import rotate
+from nav_sim.utils.action import ActionXY,ActionVW
 from nav_sim.entity.manager import EntityManager
 from nav_sim.entity.sensor import Sensor
 from collections import deque
@@ -14,18 +15,15 @@ class Robot(Sprite):
         self.x = self.config['x']
         self.y = self.config['y']
         self.r = self.config['r'] # m
+        self.v_pref = self.config["v_pref"]
         
         # inherit parameters
-        self.vx = math.cos(math.radians(self.config['theta']))
-        self.vy = math.sin(math.radians(self.config['theta']))
+        self.vx = 0
+        self.vy = 0
         self.theta = self.config['theta']
         self.v = 0 # m/s
         self.omega = 0 # rad/s
-        
-        self.v_max = config['v_max']
-        self.v_min = config['v_min']
-        self.omega_max = config['omega_max']
-        self.omega_min = config['omega_min']
+
 
         self.dt = dt 
         self.image = None
@@ -72,14 +70,9 @@ class Robot(Sprite):
         return
         
     def update(self):
-        d_theta = math.degrees(self.omega*self.dt)
-        self.vx ,self.vy = rotate(self.vx,self.vy,d_theta)
-        theta_rad = math.atan2(self.vy,self.vx)
-        self.theta = math.degrees(theta_rad)
-
-        self.x  += self.v*self.dt*math.cos(theta_rad)
-        self.y  += self.v*self.dt*math.sin(theta_rad)
-
+        self.x  += self.vx
+        self.y  += self.vy
+        self.theta = math.degrees(math.atan2(self.vy,self.vx))
         self.trace.append((self.x,self.y))
         self.display_trace.append(self.coord_trans(self.x,self.y))
 
@@ -89,9 +82,15 @@ class Robot(Sprite):
 
         return 
         
-    def move(self,v,omega):
-        self.v = v
-        self.omega = omega
+    def move(self,action):
+        if isinstance(action,ActionXY):
+            self.vx += action.vx*self.dt
+            self.vy += action.vy*self.dt
+        else:
+            self.vx += action.v*self.dt*math.cos(action.w)
+            self.vy += action.v*self.dt*math.sin(action.w)
+            self.omega = action.w
+            self.v  = action.v
         return
     
     def draw(self,screen):
@@ -109,7 +108,7 @@ class Robot(Sprite):
 
     @property
     def states(self):
-        return {'x':self.x,'y':self.y,'r':self.r,'theta':self.theta,"vx":self.vx,"vy":self.vy,"v":self.v,"omega":self.omega}
+        return {'x':self.x,'y':self.y,'r':self.r,'theta':self.theta,"vx":self.vx,"vy":self.vy,"v":self.v,"omega":self.omega,"v_pref":self.v_pref}
         
     def detect(self,obsacles:list,humans:list,goals:list)-> dict:
         results = {}

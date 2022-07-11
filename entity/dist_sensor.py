@@ -15,9 +15,6 @@ class DistSensor(Sensor):
         self.scare_trans = scare_trans
         self.coord_trans = coord_trans
 
-        
-        
-
 
     def detect(self,robot_states:dict,obstacles:list,humans:list,goals:list) -> dict:
         x,y,r,theta = robot_states['x'],robot_states['y'],robot_states['r'],robot_states['theta']

@@ -31,7 +31,7 @@ class Human(Sprite):
         self.vx = 0
         self.vy = 0
         self.theta = 0
-        self.max_speed = 0
+        self.v_pref = 0
         self.safe_r = 0
 
         self.pref_vx = 0
@@ -65,11 +65,11 @@ class Human(Sprite):
         self.vy = math.sin(math.radians(self.config['theta']))
         self.safe_r = self.config["safe_r"]
         self.target = self.config["target"]
-        self.max_speed = self.config["max_speed"]
+        self.v_pref = self.config["v_pref"]
 
         angle = math.atan2(self.target[1] - self.y,self.target[0]-self.x)
-        self.pref_vx = self.max_speed*math.cos(angle)
-        self.pref_vy = self.max_speed*math.sin(angle)
+        self.pref_vx = self.v_pref * math.cos(angle)
+        self.pref_vy = self.v_pref * math.sin(angle)
 
         self.pref_vx,self.pref_vy = normalize_2d(self.pref_vx,self.pref_vy)
 
@@ -101,15 +101,15 @@ class Human(Sprite):
 
             params = cls.neighbor_dist, cls.max_neighbors, cls.time_horizon, cls.time_horizon_obs
 
-            cls.sim = rvo2.PyRVOSimulator(humans[0].dt,*params,1.2*humans[0].r,humans[0].max_speed)
+            cls.sim = rvo2.PyRVOSimulator(humans[0].dt, *params, 1.2 * humans[0].r, humans[0].v_pref)
 
             for human in humans:
                 human.agent_id = cls.sim.addAgent((human.x,human.y), *params, human.r + 0.01 + human.safe_r,
-                                  human.max_speed, (human.vx,human.vy))
+                                                  human.v_pref, (human.vx, human.vy))
 
 
-            robot.agent_id = cls.sim.addAgent((robot.x, robot.y), *params, 1.5*robot.r,
-                             robot.v_max, (robot.vx, robot.vy))
+            robot.agent_id = cls.sim.addAgent((robot.x, robot.y), *params, 1.5 * robot.r,
+                                              robot.v_pref, (robot.vx, robot.vy))
 
             for obstacle in obstacles:
                 x,y,r = obstacle.x,obstacle.y,obstacle.r
@@ -158,8 +158,8 @@ class Human(Sprite):
 
     def update_pref_v(self):
         angle = math.atan2(self.target[1] - self.y, self.target[0] - self.x)
-        self.pref_vx = self.max_speed * math.cos(angle)
-        self.pref_vy = self.max_speed * math.sin(angle)
+        self.pref_vx = self.v_pref * math.cos(angle)
+        self.pref_vy = self.v_pref * math.sin(angle)
         self.pref_vx, self.pref_vy = normalize_2d(self.pref_vx, self.pref_vy)
         return
 

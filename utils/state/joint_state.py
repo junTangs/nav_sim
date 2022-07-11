@@ -10,5 +10,9 @@ class JointState(State):
     def wrapper(self, frames, **kwargs) -> np.ndarray:
 
         frame = frames[-1]
-        joint_frame = np.array(frame["robot_states"]+frame["goal_x"]+frame["goal_y"]+frame["human_pos"])
-        return joint_frame
+
+        joint_frame = frame["robot_states"]+frame["goal_x"]+frame["goal_y"]
+        for hs in frame["humans_states"]:
+            joint_frame+= hs
+
+        return np.array(joint_frame)

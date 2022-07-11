@@ -119,7 +119,7 @@ class NavEnvV1(BaseNavEnv):
         #format :[angle1,angle2,angle3,angle4,angle5,angle6,angle7,angle8] , range: (-180,180)
         goal_sensor_states_angle = []
         # format: [pos_x,pos_y,......] range: (x_range,y_range)
-        human_pos = []
+        humans_states = []
 
         goal_sensor_states_x = []
         goal_sensor_states_y = []
@@ -138,9 +138,7 @@ class NavEnvV1(BaseNavEnv):
             elif data['type'] == "human":
                 # human states
                 for hs in data["results"]:
-                    for i in range(len(hs)):
-                        human_pos.append(hs[i])
-
+                    humans_states.append(hs)
                 map = data["map"]
 
         return {"robot_states":robot_states,
@@ -149,7 +147,7 @@ class NavEnvV1(BaseNavEnv):
                 "goal_angle":goal_sensor_states_angle,
                 "goal_x":goal_sensor_states_x,
                 "goal_y":goal_sensor_states_y,
-                "human_pos":human_pos,
+                "humans_states":humans_states,
                 "map":map}
         
         

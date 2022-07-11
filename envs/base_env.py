@@ -17,6 +17,8 @@ from nav_sim.entity.manager import EntityManager
 from nav_sim.utils.reward import REWARDS
 from nav_sim.utils.state import STATES
 from nav_sim.entity import Human
+from nav_sim.utils.action import ActionXY,ActionVW
+import itertools
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
     def __init__(self,config) -> None:
@@ -52,8 +54,11 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.stack_frames = self.config['stack_frames']
         self.frames = None
         self.states_wrapper = None
-        self.action_map = self.config['action_map']
         self.seed = self.config['seed']
+
+        self.speed_samples = self.config['speed_samples']
+        self.rotation_samples = self.config['rotation_samples']
+        self.kinematics = self.config["kinematics"]
 
         self.is_set_up = False
         
@@ -88,7 +93,6 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.stack_frames = self.config['stack_frames']
         self.frames = None
         self.states_wrapper = STATES[self.config["state_wrapper"]]()
-        self.action_map = self.config['action_map']
         self.seed = self.config['seed']
 
 
@@ -110,8 +114,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             self.screen = pygame.display.set_mode(self.display_size,HWSURFACE) # set screen
         
         init_states = self._states()
-        BaseNavEnv.observation_space = Box(0,1,(self.stack_frames,len(init_states)))
-        BaseNavEnv.action_space = Discrete(len(self.action_map))
+        self.observation_space = Box(0,1,(self.stack_frames,len(init_states)))
+        self.setup_action(self.robot.v_pref)
         self.frames = deque([init_states]*self.stack_frames,maxlen=self.stack_frames+1)
 
         
@@ -173,9 +177,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     def step(self,action):
         
         info = {"done_info":None,"time":0,"step":0}
-        
-        action = self.action(action)
-        self.robot.move(*action)
+
+        self.robot.move(action)
         
         # update states
         self.robot.update()
@@ -252,7 +255,24 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.config = json.load(file)
         self.__dict__.update(self.config)
         return
-    
-    
-    def action(self,action):
-        return self.action_map[str(action)]
+
+    def setup_action(self, v_pref):
+        holonomic = True if self.kinematics == 'holonomic' else False
+        speeds = [(np.exp((i + 1) / self.speed_samples) - 1) / (np.e - 1) * v_pref for i in
+                  range(self.speed_samples)]
+        if holonomic:
+            rotations = np.linspace(0, 2 * np.pi, self.rotation_samples, endpoint=False)
+        else:
+            rotations = np.linspace(-np.pi / 4, np.pi / 4, self.rotation_samples)
+
+        action_space = [ActionXY(0, 0) if holonomic else ActionVW(0, 0)]
+        for rotation, speed in itertools.product(rotations, speeds):
+            if holonomic:
+                action_space.append(ActionXY(speed * np.cos(rotation), speed * np.sin(rotation)))
+            else:
+                action_space.append(ActionVW(speed, rotation))
+
+        self.speeds = speeds
+        self.rotations = rotations
+        self.action_space = action_space
+

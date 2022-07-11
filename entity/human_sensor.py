@@ -33,7 +33,7 @@ class HumanSensor(Sensor):
                 dx = (human.x - robot_states["x"])
                 dy = (human.y - robot_states["y"])
 
-                vx, vy = robot_states["vx"], robot_states["vy"]
+                vx, vy = math.cos(robot_states["theta"]), math.sin(robot_states["theta"])
                 angle = math.radians(clock_angle(vx, vy, dx, dy))
 
                 # map_samples.append((self.density_map_width // 2 + dist * self.density_map_width * 0.5 / self.r * math.sin(angle)))
