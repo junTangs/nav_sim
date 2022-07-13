@@ -36,8 +36,8 @@ class ApfReward(Reward):
         super().__init__()
         
         self.lst_poten = 0
-        self.v = 0
-        self.omega = 0
+        self.vx = 0
+        self.vy = 0
         
         self.__is_setup = False
     
@@ -55,10 +55,10 @@ class ApfReward(Reward):
         
         poten =  cal_apf(goals,obstacles,humans,robot)
         r = 10*(self.lst_poten - poten)
-        r -= abs(robot.v - self.v)+ abs(robot.omega - self.omega)
+        r -= abs(robot.vx - self.vx)+ abs(robot.vy - self.vy)
 
         self.lst_poten = poten
-        self.v = robot.v
-        self.omega = robot.omega
+        self.vx = robot.vx
+        self.vy = robot.vy
 
         return r

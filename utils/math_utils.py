@@ -1,11 +1,19 @@
 import math
 from numba import njit
-
+import numpy as np
 @njit
 def rotate(x,y,degree):
     x_new = x*math.cos(math.radians(degree)) - y*math.sin(math.radians(degree))
     y_new = x*math.sin(math.radians(degree)) + y*math.cos(math.radians(degree))
     return x_new,y_new
+
+@njit
+def rotate_array(x,y,degree):
+    x_new = x*np.cos(np.radians(degree)) - y*np.sin(np.radians(degree))
+    y_new = x*np.sin(np.radians(degree)) + y*np.cos(np.radians(degree))
+    return x_new,y_new
+
+
 
 @njit
 def distance(x1,y1,x2,y2):

@@ -1,3 +1,5 @@
+import random
+
 from pygame.sprite import Sprite
 import math
 from nav_sim.utils.math_utils import normalize_2d
@@ -6,6 +8,7 @@ from nav_sim.entity.manager import EntityManager
 import numpy as np
 from nav_sim.entity.obstacle import Obstacle
 from nav_sim.entity.robot import Robot
+from nav_sim.utils.math_utils import distance
 
 import rvo2
 
@@ -13,10 +16,10 @@ import rvo2
 class Human(Sprite):
     sim = None
     # orca config
-    max_neighbors = 0
-    neighbor_dist = 0
-    time_horizon = 0
-    time_horizon_obs = 0
+    max_neighbors = 30
+    neighbor_dist = 5
+    time_horizon = 5
+    time_horizon_obs = 5
 
     human_exist = False
     update_lock = False
@@ -138,9 +141,17 @@ class Human(Sprite):
         cls.sim.doStep()
 
         for human in humans:
+            if distance(human.x,human.y,human.target[0],human.target[1]) <= human.r:
+                    # other = random.choice(humans)
+                    # human.target[0] = other.x
+                    # human.target[1] = other.y
+                    continue
             human.x ,human.y = cls.sim.getAgentPosition(human.agent_id)
             human.vx,human.vy = cls.sim.getAgentVelocity(human.agent_id)
             human.theta = math.degrees(math.atan2(human.vy,human.vx))
+
+
+
 
     @classmethod
     def unlock_orca(cls):
@@ -173,5 +184,7 @@ class Human(Sprite):
     def set(self, **kwargs):
         self.__dict__.update(kwargs)
         self.setup()
+
+
 
 

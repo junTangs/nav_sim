@@ -70,9 +70,10 @@ class Robot(Sprite):
         return
         
     def update(self):
-        self.x  += self.vx
-        self.y  += self.vy
+        self.x  += self.vx*self.dt
+        self.y  += self.vy*self.dt
         self.theta = math.degrees(math.atan2(self.vy,self.vx))
+
         self.trace.append((self.x,self.y))
         self.display_trace.append(self.coord_trans(self.x,self.y))
 
@@ -84,11 +85,11 @@ class Robot(Sprite):
         
     def move(self,action):
         if isinstance(action,ActionXY):
-            self.vx += action.vx*self.dt
-            self.vy += action.vy*self.dt
+            self.vx = action.vx
+            self.vy = action.vy
         else:
-            self.vx += action.v*self.dt*math.cos(action.w)
-            self.vy += action.v*self.dt*math.sin(action.w)
+            self.vx = action.v*math.cos(action.w)
+            self.vy = action.v*math.sin(action.w)
             self.omega = action.w
             self.v  = action.v
         return

@@ -1,4 +1,4 @@
-from nav_sim.envs import NavEnvV1
+from nav_sim.envs import NavEnvV1,NavEnvV2
 from nav_sim.entity import *
 
 

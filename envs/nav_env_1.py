@@ -17,39 +17,49 @@ class NavEnvV1(BaseNavEnv):
         super().__init__(config)
     
     def _setup(self):
+
+        self._setup_robot()
+        self._setup_obstacles()
+        self._setup_humans()
+        self._setup_goals()
+        return
+
+
+    def _setup_robot(self):
         # steup robot
         robot_config_path = self.config['robot_config_path']
-        robot_config  = json.load(open(robot_config_path))
-        robot = Robot(robot_config,self.dt,self.scare,self.coord_trans)
-        
+        robot_config = json.load(open(robot_config_path))
+        robot = Robot(robot_config, self.dt, self.scare, self.coord_trans)
+
         if robot_config['is_random']:
-            robot.x = random.uniform(0,self.length)
-            robot.y = random.uniform(0,self.width)
-            robot.theta = random.uniform(-180,180)
+            robot.x = random.uniform(0, self.length)
+            robot.y = random.uniform(0, self.width)
+            robot.theta = random.uniform(-180, 180)
         self.robot = robot
 
-
+    def _setup_obstacles(self):
         # setup obstacles
         obstacle_config_path = self.config['obstacle_config_path']
         obstacle_configs = json.load(open(obstacle_config_path))
 
-        if len(obstacle_configs["obstacles"])!= 0:
+        if len(obstacle_configs["obstacles"]) != 0:
             for obstacle_config in obstacle_configs["obstacles"]:
-                obstacle = Obstacle(obstacle_config,self.dt,self.scare,self.coord_trans)
+                obstacle = Obstacle(obstacle_config, self.dt, self.scare, self.coord_trans)
 
                 if obstacle_config['is_random']:
-                    try_cnt  = 0
-                    while(try_cnt != 10000):
-                        obstacle.x = random.uniform(0,self.length)
-                        obstacle.y = random.uniform(0,self.width)
+                    try_cnt = 0
+                    while (try_cnt != 10000):
+                        obstacle.x = random.uniform(0, self.length)
+                        obstacle.y = random.uniform(0, self.width)
 
-                        if distance(obstacle.x,obstacle.y,robot.x,robot.y) > obstacle.r+ robot.r:
+                        if distance(obstacle.x, obstacle.y, self.robot.x, self.robot.y) > obstacle.r + self.robot.r:
                             break
                         try_cnt += 1
                     if try_cnt == 10000:
                         raise Exception('Obstacle is too close to robot')
                 self.obstacles.add(obstacle)
 
+    def _setup_humans(self):
         # setup crowds
         human_config_path = self.config['human_config_path']
         human_configs = json.load(open(human_config_path))
@@ -60,11 +70,11 @@ class NavEnvV1(BaseNavEnv):
                 if human_config['is_random']:
                     try_cnt = 0
                     while (try_cnt != 10000):
+                        human.v_pref = random.uniform(0.3,0.7)
                         human.x = random.uniform(0, self.length)
                         human.y = random.uniform(0, self.width)
                         human.target[0] = random.uniform(0, self.length)
                         human.target[1] = random.uniform(0, self.width)
-
                         if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
                             len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
                             distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
@@ -73,27 +83,26 @@ class NavEnvV1(BaseNavEnv):
                     if try_cnt == 10000:
                         raise Exception('Human is too close to other entities')
                 self.humans.add(human)
-
             Human.setup_orca()
-        
+
+    def _setup_goals(self):
         # setup goals
         goal_config_path = self.config['goal_config_path']
         goal_configs = json.load(open(goal_config_path))
         for goal_config in goal_configs["goals"]:
-            goal = Goal(goal_config,self.dt,self.scare,self.coord_trans)
-            
+            goal = Goal(goal_config, self.dt, self.scare, self.coord_trans)
+
             if goal_config['is_random']:
-                try_cnt  = 0
-                while(try_cnt != 10000):
-                    goal.x = random.uniform(0,self.length)
-                    goal.y = random.uniform(0,self.width)
-                    if len(pygame.sprite.spritecollide(goal,self.obstacles,False,collide)) == 0:
+                try_cnt = 0
+                while (try_cnt != 10000):
+                    goal.x = random.uniform(0, self.length)
+                    goal.y = random.uniform(0, self.width)
+                    if len(pygame.sprite.spritecollide(goal, self.obstacles, False, collide)) == 0:
                         break
                     try_cnt += 1
                 if try_cnt == 10000:
                     raise Exception('Goal is too close to robot')
             self.goals.add(goal)
-        return
 
     def _states(self):
         # format:  {"x":0,"y":0,"r":0,"v":0,"omega":0,"theta":0}
@@ -103,9 +112,12 @@ class NavEnvV1(BaseNavEnv):
                         robot_states['x'],
                         robot_states['y'],
                         robot_states['r'],
+                        robot_states['theta'],
+                        robot_states['vx'],
+                        robot_states['vy'],
                         robot_states['v'],
                         robot_states['omega'],
-                        robot_states['theta']
+                        robot_states['v_pref']
                         ]
 
         
