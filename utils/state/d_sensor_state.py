@@ -29,7 +29,7 @@ class DistSensorState(State):
         d = state[:,9].reshape(-1,1)
         angle = state[:,10].reshape(-1,1)
         r = state[:,2].reshape(-1,1)
-        theta = state[:,3].rehsape(-1,1)
+        theta = state[:,3].reshape(-1,1)
         
 
         state = np.concatenate([d,angle,v,theta,omega,r,sensor])
