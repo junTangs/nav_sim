@@ -51,7 +51,7 @@ def line_circle_cross_cal(x,y,dir_x,dir_y,c_x,c_y,r):
     elif d > 0 :
         return min(-b+math.sqrt(d),-b-math.sqrt(d))
 
-@njit
+# @njit
 def clock_angle(x1,y1,x2,y2):
     the_norm1 = math.sqrt(x1**2 + y1**2)
     the_norm2 = math.sqrt(x2**2 + y2**2)

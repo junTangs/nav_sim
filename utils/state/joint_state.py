@@ -1,9 +1,10 @@
+from curses import noraw
 from nav_sim.utils.state.state import State
 import numpy as np 
 
 
 class JointState(State):
-    def __init__(self) -> None:
+    def __init__(self,norm = False) -> None:
         super().__init__()
         
         

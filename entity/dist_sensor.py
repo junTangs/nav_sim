@@ -1,6 +1,6 @@
 
 import math
-from nav_sim.utils.math_utils import line_circle_cross_cal,trans_angle
+from nav_sim.utils.math_utils import line_circle_cross_cal, norm,trans_angle
 from nav_sim.entity.sensor import Sensor
 import pygame 
 
@@ -40,6 +40,7 @@ class DistSensor(Sensor):
 
         results = min(self.max_distance,results)
         results = max(0,results)
+        results = norm(results,self.max_distance)
 
         self.data = {"x":x,"y":y,"r":r,"theta":theta,"results":results}
         return {"results":results,"theta":theta,"type":"dist"}

@@ -1,12 +1,16 @@
 from nav_sim.utils import state
 from nav_sim.utils.state.state import State
-from nav_sim.utils.math_utils import rotate_array
+from nav_sim.utils.math_utils import norm, rotate_array
 import numpy as np
+from nav_sim.utils.norm import Normalization
 
 
 class DistSensorState(State):
-    def __init__(self) -> None:
+    def __init__(self,norm = False) -> None:
         super().__init__()
+        self.is_nrom = norm
+        self.norm = None
+
 
     def wrapper(self, frames, **kwargs) -> np.ndarray:
         # 0,1,2, 3,   4, 5, 6,  7  , 8,9,10,...
@@ -18,6 +22,9 @@ class DistSensorState(State):
                                       f["obs_states"]
                                       ).reshape(1, -1) for f in frames]
 
+
+                
+            
 
         state = np.concatenate(robot_goal_frames, axis=0)
 
@@ -33,4 +40,10 @@ class DistSensorState(State):
         
 
         state = np.concatenate([d,angle,v,theta,omega,r,sensor],axis = -1)
+        if self.is_nrom:
+            if self.norm is None:
+                self.norm = Normalization(shape = state.shape)
+            state = self.norm(state)
+
+
         return {"states": state}

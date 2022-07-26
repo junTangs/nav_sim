@@ -23,10 +23,10 @@ def cal_apf(goals,obstacles,humans,robot):
          att += att_filed(g.x,g.y,robot.x,robot.y,1)
 
     for obs in obstacles:
-        rep = 5*max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,robot.r,1),rep)
+        rep = 0.5*max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,robot.r,1),rep)
     for h in humans:
-        rep  = 5*max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,robot.r,1),rep)
-    rep = min(5,rep)
+        rep  = 0.5*max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,robot.r,1),rep)
+    rep = min(0.5,rep)
     return att+rep
 
 
@@ -51,11 +51,12 @@ class ApfReward(Reward):
         if collide:
             return  -10
         if finish:
-            return  500
+            return  200
         
         poten =  cal_apf(goals,obstacles,humans,robot)
-        r = 10*(self.lst_poten - poten)
-        r -= abs(robot.vx - self.vx)+ abs(robot.vy - self.vy)
+        
+        r = 10*(self.lst_poten - poten - 0.01)
+        r -= 0.1 *(abs(robot.vx - self.vx)+ abs(robot.vy - self.vy))
 
         self.lst_poten = poten
         self.vx = robot.vx

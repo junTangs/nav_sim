@@ -1,4 +1,5 @@
 
+from cgi import print_environ_usage
 from pygame.sprite import Sprite
 import pygame
 import math
@@ -72,7 +73,6 @@ class Robot(Sprite):
     def update(self):
         self.x  += self.vx*self.dt
         self.y  += self.vy*self.dt
-        self.theta = math.degrees(math.atan2(self.vy,self.vx))
 
         self.trace.append((self.x,self.y))
         self.display_trace.append(self.coord_trans(self.x,self.y))
@@ -88,10 +88,13 @@ class Robot(Sprite):
             self.vx = action.vx
             self.vy = action.vy
         else:
-            self.vx = action.v*math.cos(action.w)
-            self.vy = action.v*math.sin(action.w)
+            theta =  math.radians(self.theta) + action.w
             self.omega = action.w
             self.v  = action.v
+            self.vx = self.v * math.cos(theta)
+            self.vy = self.v * math.sin(theta)
+            self.theta = math.degrees(theta)
+    
         return
     
     def draw(self,screen):

@@ -1,3 +1,4 @@
+from cmath import inf
 import json
 from abc import ABCMeta, abstractmethod
 import math
@@ -61,6 +62,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.kinematics = self.config["kinematics"]
 
         self.is_set_up = False
+
         
         # recoder 
         self.collide_flag = False
@@ -92,7 +94,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # states and action
         self.stack_frames = self.config['stack_frames']
         self.frames = None
-        self.states_wrapper = STATES[self.config["state_wrapper"]]()
+        self.states_wrapper = STATES[self.config["state_wrapper"]](norm = self.config['is_running_norm'])
         self.seed = self.config['seed']
 
 
@@ -203,6 +205,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         info["time"] = self.t
         info["step"] = self.step_count
         reward = self.reward()
+        
         return self.states(),reward,done,info
 
 
@@ -221,6 +224,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             for human in self.humans:
                 human.draw(self.screen)
             self.robot.draw(self.screen)
+            
 
 
             if mode == "human":

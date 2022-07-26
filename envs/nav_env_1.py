@@ -8,6 +8,7 @@ from nav_sim.entity import Obstacle
 from nav_sim.entity import Human
 import pygame
 from nav_sim.utils.env_utils import collide
+from nav_sim.utils.math_utils import norm
 import random
 import json
 import math
@@ -70,7 +71,7 @@ class NavEnvV1(BaseNavEnv):
                 if human_config['is_random']:
                     try_cnt = 0
                     while (try_cnt != 10000):
-                        human.v_pref = random.uniform(0.1,0.2)
+                        human.v_pref = random.uniform(0.05,0.1)
                         human.x = random.uniform(0, self.length)
                         human.y = random.uniform(0, self.width)
                         human.target[0] = random.uniform(0, self.length)
@@ -108,17 +109,31 @@ class NavEnvV1(BaseNavEnv):
         # format:  {"x":0,"y":0,"r":0,"v":0,"omega":0,"theta":0}
         robot_states = self.robot.states
 
-        robot_states = [
-                        robot_states['x'],
-                        robot_states['y'],
-                        robot_states['r'],
-                        robot_states['theta'],
-                        robot_states['vx'],
-                        robot_states['vy'],
-                        robot_states['v'],
-                        robot_states['omega'],
-                        robot_states['v_pref']
-                        ]
+        if not self.config["is_norm"]:
+            robot_states = [
+                            robot_states['x'],
+                            robot_states['y'],
+                            robot_states['r'],
+                            robot_states['theta'],
+                            robot_states['vx'],
+                            robot_states['vy'],
+                            robot_states['v'],
+                            robot_states['omega'],
+                            robot_states['v_pref']
+                            ]
+        else:
+            robot_states = [
+                norm(robot_states['x'],self.length),
+                norm(robot_states['y'],self.width),
+                1,
+                norm(robot_states['theta'],180,-180),
+                robot_states['vx']/robot_states['v_pref'],
+                robot_states['vy']/robot_states['v_pref'],
+                robot_states['v']/robot_states['v_pref'],
+                norm(robot_states['omega'],180,-180),
+                1
+                ]
+            
 
         
         # observation
@@ -139,14 +154,25 @@ class NavEnvV1(BaseNavEnv):
         for sensor_name,data in sensor_data.items():
             if data['type'] == 'dist':
                 # distance between robot and obstacle
+                # data has been normalized 
                 obs_sensor_states.append(data['results'])
+
+                    
             elif data['type'] == 'goal':
                 # distance between robot and goal
                 for goal in data['results']:
-                    goal_sensor_states_dist.append(goal['distance'])
-                    goal_sensor_states_angle.append(goal['angle'])
-                    goal_sensor_states_x.append(goal["x"])
-                    goal_sensor_states_y.append(goal["y"])
+                    
+                    if not self.config["is_norm"]:
+                        goal_sensor_states_dist.append(goal['distance'])
+                        goal_sensor_states_angle.append(goal['angle'])
+                        goal_sensor_states_x.append(goal["x"])
+                        goal_sensor_states_y.append(goal["y"])
+                    else:
+                        goal_sensor_states_dist.append(norm(goal['distance'],self.max_distance))
+                        goal_sensor_states_angle.append(norm(goal['angle'],180,-180))
+                        goal_sensor_states_x.append(norm(goal["x"],self.length))
+                        goal_sensor_states_y.append(norm(goal["y"],self.width))
+                        
             elif data['type'] == "human":
                 # human states
                 for hs in data["results"]:

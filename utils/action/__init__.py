@@ -2,4 +2,4 @@ from collections import  namedtuple
 
 
 ActionXY = namedtuple('ActionXY', ['vx', 'vy'])
-ActionVW = namedtuple('ActionVW', ['v', 'r'])
+ActionVW = namedtuple('ActionVW', ['v', 'w'])
