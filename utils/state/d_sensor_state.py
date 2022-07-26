@@ -21,14 +21,16 @@ class DistSensorState(State):
 
         state = np.concatenate(robot_goal_frames, axis=0)
 
-        gd = state[:,9].reshape(-1,1)
-        angle = state[:,10].reshape(-1,1)
-        vx,vy= rotate_array(state[:,4],state[:,5],state[:,3])
-        vx = vx.reshape(-1,1)
-        vy = vy.reshape(-1,1)
-        r = state[:,2].reshape(-1,1)
-        v_pref = state[:,8].reshape(-1,1)
-        sensor = state[:,11:].reshape(-1,8)
 
-        state = np.concatenate([vx,vy,r,gd,angle,v_pref,sensor],axis=-1)
+        sensor = state[:,11:].reshape(-1,8)
+        
+        v = state[:,6].reshape(-1,1)
+        omega = state[:,7].reshape(-1,1)
+        d = state[:,9].reshape(-1,1)
+        angle = state[:,10].rehsape(-1,1)
+        r = state[:,2].reshape(-1,1)
+        theta = state[:,3].rehsape(-1,1)
+        
+
+        state = np.concatenate([d,angle,v,theta,omega,r,sensor])
         return {"states": state}
