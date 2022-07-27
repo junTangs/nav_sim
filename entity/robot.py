@@ -24,6 +24,10 @@ class Robot(Sprite):
         self.theta = self.config['theta']
         self.v = 0 # m/s
         self.omega = 0 # rad/s
+        
+        self.last_vx = 0
+        self.last_vy = 0
+        self.last_theta = 0
 
 
         self.dt = dt 
@@ -73,7 +77,9 @@ class Robot(Sprite):
     def update(self):
         self.x  += self.vx*self.dt
         self.y  += self.vy*self.dt
+        
 
+        
         self.trace.append((self.x,self.y))
         self.display_trace.append(self.coord_trans(self.x,self.y))
 
@@ -87,6 +93,9 @@ class Robot(Sprite):
         if isinstance(action,ActionXY):
             self.vx = action.vx
             self.vy = action.vy
+            self.theta = math.degrees(math.atan2(self.vy,self.vx))
+            self.v = self.vx**2 + self.vy**2
+            self.omega = self.theta - self.last_theta
         else:
             theta =  math.radians(self.theta) + action.w
             self.omega = action.w
@@ -94,7 +103,11 @@ class Robot(Sprite):
             self.vx = self.v * math.cos(theta)
             self.vy = self.v * math.sin(theta)
             self.theta = math.degrees(theta)
-    
+
+        self.last_vx = self.vx
+        self.last_vy = self.vy 
+        self.last_theta = self.theta
+        
         return
     
     def draw(self,screen):

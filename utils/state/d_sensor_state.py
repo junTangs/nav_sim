@@ -31,15 +31,15 @@ class DistSensorState(State):
 
         sensor = state[:,11:].reshape(-1,8)
         
-        v = state[:,6].reshape(-1,1)
-        omega = state[:,7].reshape(-1,1)
+        vx = state[:,4].reshape(-1,1)
+        vy = state[:,5].reshape(-1,1)
         d = state[:,9].reshape(-1,1)
         angle = state[:,10].reshape(-1,1)
         r = state[:,2].reshape(-1,1)
         theta = state[:,3].reshape(-1,1)
         
 
-        state = np.concatenate([d,angle,v,theta,omega,r,sensor],axis = -1)
+        state = np.concatenate([d,angle,theta,vx,vy,r,sensor],axis = -1)
         if self.is_nrom:
             if self.norm is None:
                 self.norm = Normalization(shape = state.shape)
