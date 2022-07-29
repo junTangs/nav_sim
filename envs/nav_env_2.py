@@ -9,8 +9,7 @@ import random
 from nav_sim.utils.math_utils import distance,clock_angle,norm
 import  pygame
 from nav_sim.utils.env_utils import collide
-
-
+import math
 
 class NavEnvV2(NavEnvV1):
     def __init__(self,config):
@@ -23,9 +22,9 @@ class NavEnvV2(NavEnvV1):
         robot_config = json.load(open(robot_config_path))
         robot = Robot(robot_config, self.dt, self.scare, self.coord_trans)
 
-        # robot located on left bottom of env
-        robot.x = 5
-        robot.y = 5
+        robot.x = 1
+        robot.y = self.width//2
+
         robot.theta = 0
         self.robot = robot
 
@@ -56,17 +55,21 @@ class NavEnvV2(NavEnvV1):
         human_config_path = self.config['human_config_path']
         human_configs = json.load(open(human_config_path))
         if len(human_configs["humans"]) != 0:
+            cnt = 0
             for human_config in human_configs["humans"]:
                 human = Human(human_config, self.dt, self.scare, self.coord_trans)
 
                 if human_config['is_random']:
                     try_cnt = 0
                     while (try_cnt != 10000):
-                        human.x = random.uniform(0, self.length)
-                        human.y = random.uniform(0, self.width)
-                        human.target[0] = random.uniform(0, self.length)
-                        human.target[1] = random.uniform(0, self.width)
-                        human.v_pref = 0.1
+                        
+                        r = 3
+                        theta = random.uniform(0, 2*math.pi)
+                        human.x = r*math.cos(theta) + self.length//2
+                        human.y = r*math.sin(theta) +  self.width//2
+                        human.target[0] = self.length - human.x
+                        human.target[1] = self.width - human.y
+                        human.v_pref = random.uniform(0.5,0.7)
 
                         if len(pygame.sprite.spritecollide(human, self.obstacles, False, collided=collide)) == 0 and \
                                 len(pygame.sprite.spritecollide(human, self.humans, False, collided=collide)) == 0 and \
@@ -76,6 +79,9 @@ class NavEnvV2(NavEnvV1):
                     if try_cnt == 10000:
                         raise Exception('Human is too close to other entities')
                 self.humans.add(human)
+                cnt +=1 
+                if cnt >= 10:
+                    break
             Human.setup_orca()
 
     def _setup_goals(self):
@@ -83,14 +89,13 @@ class NavEnvV2(NavEnvV1):
         goal_config = {
             "x":0,
             "y":0,
-            "r":0.2,
+            "r":0.05,
             "image":"nav_sim/images/goal.png",
             "is_random": True
         }
         
-        target = [[1,self.length -1],[1,1],[self.length -1,self.width -1],[1,self.width -1]]
-        pos = random.choice(target)
         goal = Goal(goal_config, self.dt, self.scare, self.coord_trans)
-        goal.x = pos[0]
-        goal.y = pos[1]
+
+        goal.x = self.length - self.robot.x
+        goal.y = self.width - self.robot.y
         self.goals.add(goal)

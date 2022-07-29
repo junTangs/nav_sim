@@ -1,3 +1,4 @@
+from numpy import clip
 from nav_sim.utils.reward.reward import Reward
 from nav_sim.utils.math_utils import distance,gaussian
 from numba import njit
@@ -10,11 +11,11 @@ def att_filed(x1,y1,x2,y2,a):
 @njit
 def rep_filed(x1,y1,x2,y2,r,r2,a):
     dist = distance(x1,y1,x2,y2) - (r + r2)
-    # if dist <= r:
-    #     return 0.5*a*(1/dist - 1/r)**2
-    # else:
-    #     return 0
-    return a*gaussian(dist,r2)
+    if dist <= r2*3:
+        return 0.5*a*(1/dist - 1/(r2*3))**2
+    else:
+        return 0
+    # return a*gaussian(dist,0.5)
 
 def cal_apf(goals,obstacles,humans,robot):
     att = 0
@@ -23,10 +24,12 @@ def cal_apf(goals,obstacles,humans,robot):
          att += att_filed(g.x,g.y,robot.x,robot.y,1)
 
     for obs in obstacles:
-        rep = max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,0.5,20),rep)
+        rep += 0.1*rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,robot.r,1)
     for h in humans:
-        rep  = max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,0.5,20),rep)
-    rep = min(20,rep)
+        rep  += 0.1*rep_filed(h.x,h.y,robot.x,robot.y,h.r,robot.r,1)
+    # print('[rep]:',rep)
+    # print('[att]:',att)
+    # print('[apf]:',att + rep)
     return att+rep
 
 
@@ -55,11 +58,12 @@ class ApfReward(Reward):
         
         poten =  cal_apf(goals,obstacles,humans,robot)
         
-        r = 10*(self.lst_poten - poten - 0.01)
+        r = 10*(self.lst_poten - poten)
         r -= 0.1 *(abs(robot.vx - self.vx)+ abs(robot.vy - self.vy))
 
         self.lst_poten = poten
         self.vx = robot.vx
         self.vy = robot.vy
-
+        r = 20 if r >=10 else r
+        r = -20 if r<=-20 else r
         return r

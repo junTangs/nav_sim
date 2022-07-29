@@ -71,15 +71,16 @@ class NavEnvV1(BaseNavEnv):
                 if human_config['is_random']:
                     try_cnt = 0
                     while (try_cnt != 10000):
-                        human.v_pref = random.uniform(0.05,0.1)
-                        human.r = 0.4
+                        human.v_pref = random.uniform(0.3,0.7)
+                        human.r = 0.25
                         human.x = random.uniform(0, self.length)
                         human.y = random.uniform(0, self.width)
                         human.target[0] = random.uniform(0, self.length)
                         human.target[1] = random.uniform(0, self.width)
                         if len(pygame.sprite.spritecollide(human,self.obstacles,False,collided=collide)) == 0 and\
                             len(pygame.sprite.spritecollide(human,self.humans,False,collided=collide)) == 0 and\
-                            distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r:
+                            distance(human.x,human.y,self.robot.x,self.robot.y) > human.r + self.robot.r and\
+                            distance(human.x,human.y,human.target[0],human.target[1]) >= 2:
                             break
                         try_cnt += 1
                     if try_cnt == 10000:
@@ -99,7 +100,8 @@ class NavEnvV1(BaseNavEnv):
                 while (try_cnt != 10000):
                     goal.x = random.uniform(0, self.length)
                     goal.y = random.uniform(0, self.width)
-                    if len(pygame.sprite.spritecollide(goal, self.obstacles, False, collide)) == 0:
+                    if len(pygame.sprite.spritecollide(goal, self.obstacles, False, collide)) == 0 and \
+                      distance(goal.x,goal.y,self.robot.x,self.robot.y) > 0.5*self.length:
                         break
                     try_cnt += 1
                 if try_cnt == 10000:

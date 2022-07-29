@@ -95,6 +95,4 @@ class NavEnvDebug(NavEnvV1):
         info["step"] = self.step_count
         reward = self.reward()
         state = self.states()
-        pprint(state)
-        pprint(info)
         return state,reward,done,info
