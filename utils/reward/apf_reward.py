@@ -14,7 +14,7 @@ def rep_filed(x1,y1,x2,y2,r,r2,a):
     #     return 0.5*a*(1/dist - 1/r)**2
     # else:
     #     return 0
-    return gaussian(dist,r2)
+    return a*gaussian(dist,r2)
 
 def cal_apf(goals,obstacles,humans,robot):
     att = 0
@@ -23,10 +23,10 @@ def cal_apf(goals,obstacles,humans,robot):
          att += att_filed(g.x,g.y,robot.x,robot.y,1)
 
     for obs in obstacles:
-        rep = 0.5*max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,robot.r,1),rep)
+        rep = max(rep_filed(obs.x,obs.y,robot.x,robot.y,obs.r,0.5,20),rep)
     for h in humans:
-        rep  = 0.5*max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,robot.r,1),rep)
-    rep = min(0.5,rep)
+        rep  = max(rep_filed(h.x,h.y,robot.x,robot.y,h.r,0.5,20),rep)
+    rep = min(20,rep)
     return att+rep
 
 
@@ -49,7 +49,7 @@ class ApfReward(Reward):
         
     def reward(self, goals, humans, obstacles, robot, finish, collide,**kwargs) -> float:
         if collide:
-            return  -10
+            return  -20
         if finish:
             return  200
         

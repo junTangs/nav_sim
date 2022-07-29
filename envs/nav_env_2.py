@@ -24,9 +24,9 @@ class NavEnvV2(NavEnvV1):
         robot = Robot(robot_config, self.dt, self.scare, self.coord_trans)
 
         # robot located on left bottom of env
-        robot.x = 1
-        robot.y = 1
-        robot.theta = 45
+        robot.x = 5
+        robot.y = 5
+        robot.theta = 0
         self.robot = robot
 
     def _setup_obstacles(self):
@@ -66,6 +66,7 @@ class NavEnvV2(NavEnvV1):
                         human.y = random.uniform(0, self.width)
                         human.target[0] = random.uniform(0, self.length)
                         human.target[1] = random.uniform(0, self.width)
+                        human.v_pref = 0.1
 
                         if len(pygame.sprite.spritecollide(human, self.obstacles, False, collided=collide)) == 0 and \
                                 len(pygame.sprite.spritecollide(human, self.humans, False, collided=collide)) == 0 and \
@@ -86,7 +87,10 @@ class NavEnvV2(NavEnvV1):
             "image":"nav_sim/images/goal.png",
             "is_random": True
         }
+        
+        target = [[1,self.length -1],[1,1],[self.length -1,self.width -1],[1,self.width -1]]
+        pos = random.choice(target)
         goal = Goal(goal_config, self.dt, self.scare, self.coord_trans)
-        goal.x = self.length -1
-        goal.y = self.width -1
+        goal.x = pos[0]
+        goal.y = pos[1]
         self.goals.add(goal)

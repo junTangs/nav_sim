@@ -5,7 +5,7 @@ import numpy as np
 from nav_sim.utils.norm import Normalization
 
 
-class DistSensorState(State):
+class DistSensorState16(State):
     def __init__(self,norm = False) -> None:
         super().__init__()
         self.is_nrom = norm
@@ -29,7 +29,7 @@ class DistSensorState(State):
         state = np.concatenate(robot_goal_frames, axis=0)
 
 
-        sensor = state[:,11:].reshape(-1,8)
+        sensor = state[:,11:].reshape(-1,16)
         
         vx = state[:,4].reshape(-1,1)
         vy = state[:,5].reshape(-1,1)
@@ -37,7 +37,6 @@ class DistSensorState(State):
         angle = state[:,10].reshape(-1,1)
         r = state[:,2].reshape(-1,1)
         theta = state[:,3].reshape(-1,1)
-        
         state = np.concatenate([d,angle,theta,vx,vy,r,sensor],axis = -1)
         
         if self.is_nrom:

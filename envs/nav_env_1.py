@@ -72,6 +72,7 @@ class NavEnvV1(BaseNavEnv):
                     try_cnt = 0
                     while (try_cnt != 10000):
                         human.v_pref = random.uniform(0.05,0.1)
+                        human.r = 0.4
                         human.x = random.uniform(0, self.length)
                         human.y = random.uniform(0, self.width)
                         human.target[0] = random.uniform(0, self.length)
