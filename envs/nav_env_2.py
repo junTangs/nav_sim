@@ -12,11 +12,11 @@ import pygame
 from nav_sim.utils.env_utils import collide
 
 class NavEnvV2(NavEnvV1):
-    def __init__(self, config, n_human=10, n_obs=0):
+    def __init__(self, config):
         super(NavEnvV2, self).__init__(config)
-        self.n_human = n_human
-        self.n_obs = n_obs
 
+
+        
     def _setup_robot(self):
         # steup robot
         robot_config_path = self.config['robot_config_path']
@@ -40,7 +40,8 @@ class NavEnvV2(NavEnvV1):
             "is_random": False
         }
 
-        for i in range(self.n_obs):
+
+        for i in range(0):
             obstacle = Obstacle(obstacle_config, self.dt,
                                 self.scare, self.coord_trans)
 
@@ -59,8 +60,8 @@ class NavEnvV2(NavEnvV1):
     def _setup_humans(self):
         # setup crowds
 
-        human_config =         {
-            "x":5,
+        human_config =  {
+            'x':5,
             "y":7,
             "theta": -56,
             "v_pref": 0.015,
@@ -69,8 +70,8 @@ class NavEnvV2(NavEnvV1):
             "is_random": False,
             "target": [7,3],
             "safe_r": 0.1
-        },
-        for i in range(self.n_human):
+        }
+        for i in range(10):
             human = Human(human_config, self.dt,
                             self.scare, self.coord_trans)
 
@@ -104,6 +105,6 @@ class NavEnvV2(NavEnvV1):
         
         goal = Goal(goal_config, self.dt, self.scare, self.coord_trans)
 
-        goal.x = self.length - 1
-        goal.y = self.width - 1
+        goal.x = self.length -3
+        goal.y = self.width //2 
         self.goals.add(goal)
