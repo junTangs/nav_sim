@@ -1,5 +1,8 @@
 
+from cmath import pi
+import math
 from re import S
+from wsgiref.validate import validator
 from nav_sim.envs.nav_env_1 import NavEnvV1
 import json
 from nav_sim.entity import Robot
@@ -14,7 +17,6 @@ from nav_sim.utils.env_utils import collide
 class NavEnvV2(NavEnvV1):
     def __init__(self, config):
         super(NavEnvV2, self).__init__(config)
-
 
         
     def _setup_robot(self):
@@ -64,27 +66,55 @@ class NavEnvV2(NavEnvV1):
             'x':5,
             "y":7,
             "theta": -56,
-            "v_pref": 0.015,
+            "v_pref": 0.5,
             "r":0.25,
             "image":"nav_sim/images/human.png",
             "is_random": False,
             "target": [7,3],
             "safe_r": 0.1
         }
-        for i in range(10):
-            human = Human(human_config, self.dt,
-                            self.scare, self.coord_trans)
+        
+        n_h = 10
+        
+        for i in range(n_h):
+
 
             try_cnt = 0
             while (try_cnt != 10000):
-                human.x = random.uniform(0, self.length)
-                human.y = random.uniform(0, self.width)
-                human.target[0] = random.uniform(0, self.length)
-                human.target[1] = random.uniform(0, self.width)
+                
+                # a = i*2*math.pi/n_h + random.uniform(-0.1*math.pi,0.1*math.pi)
+                # r = 3 
+                # x = r*math.cos(a) + self.length//2
+                # y = r*math.sin(a) + self.width//2
+                
+                # at = a + math.pi + random.uniform(-0.1*math.pi,0.1*math.pi)
+                # tx = r*math.cos(at) + self.length//2
+                # ty = r*math.sin(at) + self.width//2
 
+                v = random.uniform(0.5,0.7)
+                x = random.uniform(1, self.length-1)
+                y = random.uniform(1, self.width-1)
+                tx = random.uniform(1, self.length-1)
+                ty = random.uniform(1, self.width-1)
+                
+
+                    
+                    
+                v = random.uniform(1,1.5)
+                theta = random.uniform(0,180)
+                
+                human_config['x'] = x
+                human_config['y'] = y
+                human_config['target'] = [tx,ty]
+                human_config['theta'] = theta
+                human_config['v_pref'] = v
+
+                
+                human = Human(human_config, self.dt,
+                            self.scare, self.coord_trans)
+        
                 if len(pygame.sprite.spritecollide(human, self.obstacles, False, collided=collide)) == 0 and \
-                        len(pygame.sprite.spritecollide(human, self.humans, False, collided=collide)) == 0 and \
-                        distance(human.x, human.y, self.robot.x, self.robot.y) > human.r + self.robot.r:
+                        len(pygame.sprite.spritecollide(human, self.humans, False, collided=collide)) == 0 :
                     break
                 try_cnt += 1
             if try_cnt == 10000:
@@ -98,13 +128,13 @@ class NavEnvV2(NavEnvV1):
 
             "x": 0,
             "y": 0,
-            "r": 0.2,
+            "r": 0.05,
             "image": "nav_sim/images/goal.png",
             "is_random": True
         }
         
         goal = Goal(goal_config, self.dt, self.scare, self.coord_trans)
 
-        goal.x = self.length -3
+        goal.x = self.length -1
         goal.y = self.width //2 
         self.goals.add(goal)

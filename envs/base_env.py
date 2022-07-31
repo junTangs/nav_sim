@@ -57,6 +57,10 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.frames = None
         self.states_wrapper = None
         self.seed = self.config['seed']
+                        
+        if self.seed is not None:
+            random.seed(self.seed)
+            np.random.seed(self.seed)
 
         self.speed_samples = self.config['speed_samples']
         self.rotation_samples = self.config['rotation_samples']
@@ -95,7 +99,6 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.stack_frames = self.config['stack_frames']
         self.frames = None
         self.states_wrapper = STATES[self.config["state_wrapper"]](norm = self.config['is_running_norm'])
-        self.seed = self.config['seed']
 
 
         self.is_set_up = False
@@ -108,8 +111,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.collide_detail = None
         self.finish_flag = False
 
-        self.recoder = Recorder()
-
+        self.recorder = Recorder()
+        
 
         self._setup()
         
@@ -121,10 +124,6 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.setup_action(self.robot.v_pref)
         self.frames = deque([init_states]*self.stack_frames,maxlen=self.stack_frames+1)
 
-        
-        if self.seed is not None:
-            random.seed(self.seed)
-            np.random.seed(self.seed)
 
         self.reward_fn = REWARDS[self.config["reward_fn"]]()
         self.reward_fn.setup(self.goals,self.obstacles,self.humans,self.robot)
@@ -185,11 +184,11 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         # record robot trajectory
         wp = False if self.collide_flag else True
         data = {'x':self.robot.x,'y':self.robot.y,'t':self.t,'wp':wp}
-        self.recoder.add_record("robot_trace",data)
+        self.recorder.add_record("robot_trace",data)
         # record human trajectory
         for i,human in enumerate(self.humans):
             data = {'x':human.x,'y':human.y,'t':self.t,'wp':True}
-            self.recoder.add_record(f"human_{i}_trace",data)
+            self.recorder.add_record(f"human_{i}_trace",data)
         
         
 
@@ -252,9 +251,6 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     def close(self):
         pygame.quit()
           
-    def seed(self,seed):
-        self.seed = seed
-    
     def states(self):
         return self.states_wrapper.wrapper(self.frames)
     

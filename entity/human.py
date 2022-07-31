@@ -141,10 +141,10 @@ class Human(Sprite):
         cls.sim.doStep()
 
         for human in humans:
-            if distance(human.x,human.y,human.target[0],human.target[1]) <= human.r:
-                    # other = random.choice(humans)
-                    # human.target[0] = other.x
-                    # human.target[1] = other.y
+            if distance(human.x,human.y,human.target[0],human.target[1]) <=  0.2*human.r:
+                    other = random.choice(humans)
+                    human.target[0] = other.x
+                    human.target[1] = other.y
                     continue
             human.x ,human.y = cls.sim.getAgentPosition(human.agent_id)
             human.vx,human.vy = cls.sim.getAgentVelocity(human.agent_id)
@@ -180,6 +180,10 @@ class Human(Sprite):
         self.rect = self.display_image.get_rect()
         self.rect.center = self.coord_trans(self.x,self.y)
         screen.blit(self.display_image, self.rect)
+        x2,y2 = self.coord_trans(self.target[0],self.target[1])
+        x1,y1 = self.coord_trans(self.x,self.y)
+        pygame.draw.line(screen,(123,123,123),(x1,y1),(x2,y2),2)
+        pygame.draw.circle(screen,(123,123,123),(x2,y2),5)
 
     def set(self, **kwargs):
         self.__dict__.update(kwargs)
