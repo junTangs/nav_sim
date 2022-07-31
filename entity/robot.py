@@ -7,7 +7,9 @@ from nav_sim.utils.math_utils import rotate
 from nav_sim.utils.action import ActionXY,ActionVW
 from nav_sim.entity.manager import EntityManager
 from nav_sim.entity.sensor import Sensor
+from nav_sim.entity.recorder import Recorder
 from collections import deque
+
 
 class Robot(Sprite):
     def __init__(self,config,dt,scare_trans,coord_trans) -> None:
@@ -86,7 +88,6 @@ class Robot(Sprite):
         if len(self.trace) > 250:
             self.trace.popleft()
             self.display_trace.popleft()
-
         return 
         
     def move(self,action):

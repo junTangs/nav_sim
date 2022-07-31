@@ -2,7 +2,7 @@ from cmath import inf
 import json
 from abc import ABCMeta, abstractmethod
 import math
-from re import S
+from re import S, T
 from gym import Env
 from gym.spaces import Box,Discrete
 from pygame.sprite import Group
@@ -19,6 +19,7 @@ from nav_sim.utils.reward import REWARDS
 from nav_sim.utils.state import STATES
 from nav_sim.entity import Human
 from nav_sim.utils.action import ActionXY,ActionVW
+from nav_sim.entity.recorder import Recorder
 import itertools
 
 class BaseNavEnv(Env,metaclass = ABCMeta):
@@ -70,9 +71,8 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.finish_flag = False
 
 
-        # reward history info
-
-        self.rwd_hst = {}
+        # history recorder 
+        self.recoder = None
 
 
         # reward function
@@ -103,11 +103,12 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.t = 0 # s
         self.step_count = 0
 
-        # recoder
+        # recoder and flag
         self.collide_flag = False
         self.collide_detail = None
         self.finish_flag = False
-        self.rwd_hst = {}
+
+        self.recoder = Recorder()
 
 
         self._setup()
@@ -161,6 +162,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
     def reset(self):
         EntityManager.clear()
         self.setup()
+        self.record()
         return self.states()
     
     def is_done(self):
@@ -175,6 +177,21 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
             return True,"collide"
 
         return False,"none"
+
+
+    def record(self):
+        # record trajectory
+    
+        # record robot trajectory
+        wp = False if self.collide_flag else True
+        data = {'x':self.robot.x,'y':self.robot.y,'t':self.t,'wp':wp}
+        self.recoder.add_record("robot_trace",data)
+        # record human trajectory
+        for i,human in enumerate(self.humans):
+            data = {'x':human.x,'y':human.y,'t':self.t,'wp':True}
+            self.recoder.add_record(f"human_{i}_trace",data)
+        
+        
 
     def step(self,action):
         
@@ -193,6 +210,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         Human.update()
 
 
+
         done,info["done_info"] = self.is_done()
 
         # update frames
@@ -201,6 +219,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
         self.frames.popleft()
         self.t += self.dt
         self.step_count += 1
+        self.record()
         
         info["time"] = self.t
         info["step"] = self.step_count
@@ -211,9 +230,7 @@ class BaseNavEnv(Env,metaclass = ABCMeta):
 
     def _setup(self):
         pass
-    
-
-        
+          
     def render(self,mode = 'human'):
         if self.is_render:
             self.screen.fill((255,255,255))
